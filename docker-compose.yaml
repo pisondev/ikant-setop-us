@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ikant_setop_us_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ikant_user
+      POSTGRES_PASSWORD: ikant_pass
+      POSTGRES_DB: ikant_setop_us_db
+      TZ: Asia/Jakarta
+    ports:
+      - "5438:5432"
+    volumes:
+      - ikant_setop_us_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ikant_user -d ikant_setop_us_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  ikant_setop_us_postgres_data:
