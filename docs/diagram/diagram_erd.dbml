@@ -1,0 +1,154 @@
+Project fish_inventory_fifo {
+  database_type: "PostgreSQL"
+  Note: '''
+  Sistem Manajemen Inventori Ikan berbasis FIFO untuk pencatatan stok masuk,
+  stok keluar, lokasi cold storage, kualitas ikan, dan histori aktivitas stok.
+  '''
+}
+
+Enum user_role {
+  owner
+  warehouse_admin
+}
+
+Enum fish_quality {
+  baik
+  sedang
+  buruk
+}
+
+Enum stock_status {
+  available
+  depleted
+}
+
+Enum stock_movement_type {
+  in
+  out
+  quality_update
+  location_update
+  adjustment
+}
+
+Table users {
+  id uuid [pk]
+  name varchar(120) [not null]
+  role user_role [not null]
+  email varchar(120)
+  password_hash text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: '''
+  Menyimpan data pengguna sistem.
+  Untuk MVP, role bisa digunakan secara sederhana atau hanya sebagai data persona.
+  '''
+}
+
+Table fish_types {
+  id uuid [pk]
+  name varchar(100) [not null, unique]
+  image_url text
+  description text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: '''
+  Master data jenis ikan, misalnya tuna, tongkol, cakalang, kakap.
+  '''
+}
+
+Table cold_storages {
+  id uuid [pk]
+  name varchar(100) [not null]
+  location_label varchar(150)
+  description text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: '''
+  Data lokasi penyimpanan ikan.
+  Bisa berupa Cold Storage A, Cold Storage B, rak, zona, atau label lokasi sederhana.
+  '''
+}
+
+Table stock_batches {
+  id uuid [pk]
+  fish_type_id uuid [not null]
+  cold_storage_id uuid [not null]
+  quality fish_quality [not null]
+  initial_weight_kg decimal(10,2) [not null]
+  remaining_weight_kg decimal(10,2) [not null]
+  entered_at timestamp [not null]
+  status stock_status [not null]
+  notes text
+  created_by uuid
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: '''
+  Satu baris mewakili satu batch stok ikan yang masuk.
+  FIFO dihitung berdasarkan entered_at.
+  '''
+}
+
+Table stock_outs {
+  id uuid [pk]
+  destination varchar(150) [not null]
+  total_weight_kg decimal(10,2) [not null]
+  out_at timestamp [not null]
+  notes text
+  created_by uuid
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+
+  Note: '''
+  Header transaksi pengeluaran ikan.
+  Detail batch yang dikurangi disimpan pada stock_out_items.
+  '''
+}
+
+Table stock_out_items {
+  id uuid [pk]
+  stock_out_id uuid [not null]
+  stock_batch_id uuid [not null]
+  weight_kg decimal(10,2) [not null]
+  created_at timestamp [not null]
+
+  Note: '''
+  Detail batch yang terpakai saat pengeluaran ikan.
+  Satu pengeluaran bisa mengambil dari beberapa batch sesuai FIFO.
+  '''
+}
+
+Table stock_movements {
+  id uuid [pk]
+  stock_batch_id uuid [not null]
+  movement_type stock_movement_type [not null]
+  weight_kg decimal(10,2)
+  previous_quality fish_quality
+  new_quality fish_quality
+  previous_cold_storage_id uuid
+  new_cold_storage_id uuid
+  description text
+  created_by uuid
+  created_at timestamp [not null]
+
+  Note: '''
+  Histori aktivitas stok.
+  Mencatat stok masuk, stok keluar, perubahan kualitas, perubahan lokasi, dan adjustment.
+  '''
+}
+
+Ref: stock_batches.fish_type_id > fish_types.id
+Ref: stock_batches.cold_storage_id > cold_storages.id
+Ref: stock_batches.created_by > users.id
+
+Ref: stock_outs.created_by > users.id
+Ref: stock_out_items.stock_out_id > stock_outs.id
+Ref: stock_out_items.stock_batch_id > stock_batches.id
+
+Ref: stock_movements.stock_batch_id > stock_batches.id
+Ref: stock_movements.previous_cold_storage_id > cold_storages.id
+Ref: stock_movements.new_cold_storage_id > cold_storages.id
+Ref: stock_movements.created_by > users.id
