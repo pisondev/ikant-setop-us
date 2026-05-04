@@ -66,7 +66,7 @@ npm run dev
 ```
 
 3. Buka browser dan akses:
-```
+```bash
 http://localhost:3000
 ```
 
