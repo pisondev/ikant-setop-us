@@ -152,10 +152,10 @@ export default function NewStockOutPage() {
         description="Sistem akan mengambil batch terlama lebih dulu."
         actions={
           <Link
-            href="/stocks"
+            href="/stock-outs"
             className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-800"
           >
-            FIFO
+            Riwayat
           </Link>
         }
       />

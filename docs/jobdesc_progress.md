@@ -12,13 +12,13 @@ Update terakhir: 2026-05-06.
 | API contract dan Postman | Pison | Selesai | Ada di `docs/api`. |
 | Frontend foundation | Mikail | Selesai tahap 1 | API helper, types, app shell, bottom nav, dan page header tersedia. |
 | `/` entry page | Mikail | Selesai sementara | Template Next.js sudah diganti menjadi entry point aplikasi. |
-| `/stocks` FIFO list | Farhan | Sebagian lanjut | Sudah memakai API helper/type bersama, error state eksplisit, dan tanpa mock fallback. |
+| `/stocks` FIFO list | Farhan | Selesai implementasi | Sudah memakai API helper/type bersama, error state eksplisit, dan tanpa mock fallback. |
 | Dashboard frontend | Farhan | Selesai | Route `/dashboard` sudah summary dan recent movements. |
 | Master data frontend | Pannayaka | Selesai | Route `/fish-types` dan `/cold-storages` sudah GET/POST API. |
 | Stock-in page | Mikail | Selesai | Route `/stocks/new` sudah GET master data dan POST `/stocks`. |
 | Stock-out page | Mikail | Selesai | Route `/stock-outs/new` sudah preview FIFO dan POST `/stock-outs`. |
-| Stock-out history | Adit | Belum | Route `/stock-outs` belum ada. |
-| README dan progress docs | Adit + Pison | Sebagian | README sudah disinkronkan, perlu update lagi saat frontend bertambah. |
+| Stock-out history | Adit | Selesai | Route `/stock-outs` sudah GET `/stock-outs`, filter dasar, dan detail batch FIFO. |
+| README dan progress docs | Adit + Pison | Selesai sementara | README dan tracker sudah disinkronkan dengan frontend MVP saat ini. |
 | Demo dan QA manual | Adit + Farhan | Belum | Menunggu halaman frontend inti selesai. |
 
 ## Progress Teknis Aktual
@@ -56,9 +56,9 @@ Update terakhir: 2026-05-06.
 [x] /cold-storages tersedia.
 [x] /stocks/new tersedia.
 [x] /stocks tersedia.
-[~] /stocks terhubung ke API tanpa mock, tetapi halaman tujuan tombol belum tersedia.
+[x] /stocks terhubung ke API tanpa mock.
 [x] /stock-outs/new tersedia.
-[ ] /stock-outs tersedia.
+[x] /stock-outs tersedia.
 ```
 
 Keterangan:
@@ -153,10 +153,10 @@ Fokus:
 Checklist:
 
 ```txt
-[ ] Buat /stock-outs.
-[ ] Integrasi GET /stock-outs.
+[x] Buat /stock-outs.
+[x] Integrasi GET /stock-outs.
 [x] README disinkronkan dengan kondisi backend/frontend saat ini.
-[ ] Update README lagi setelah frontend lengkap.
+[x] Update README lagi setelah frontend lengkap.
 [ ] Siapkan demo script final.
 [ ] Siapkan QA checklist final.
 [ ] Catat bug/mismatch sebelum submission.
@@ -189,8 +189,8 @@ Checklist:
 
 Urutan kerja yang paling aman:
 
-1. Adit membuat `/stock-outs`.
-2. Adit dan Farhan menjalankan demo flow dan QA manual.
+1. Adit dan Farhan menjalankan demo flow dan QA manual.
+2. Catat bug/mismatch sebelum submission.
 
 ## Demo Flow Target
 
@@ -216,16 +216,16 @@ Urutan kerja yang paling aman:
 [x] Database schema tersedia.
 [x] API contract tersedia.
 [x] Postman collection dan environment tersedia.
-[ ] Frontend Next.js menyala dengan halaman MVP lengkap.
+[x] Frontend Next.js menyala dengan halaman MVP lengkap.
 [x] /dashboard bisa menampilkan summary dan recent movement.
 [x] /fish-types bisa menambah jenis ikan.
 [x] /cold-storages bisa menambah cold storage.
 [x] /stocks/new bisa mencatat stok masuk.
-[ ] /stocks bisa menampilkan stok FIFO dari backend tanpa mock.
+[x] /stocks bisa menampilkan stok FIFO dari backend tanpa mock.
 [x] /stock-outs/new bisa mencatat ikan keluar.
-[ ] /stock-outs bisa menampilkan riwayat pengeluaran.
+[x] /stock-outs bisa menampilkan riwayat pengeluaran.
 [ ] Demo flow bisa dijalankan tanpa error fatal.
-[ ] README final sesuai fitur yang benar-benar selesai.
+[x] README final sesuai fitur yang benar-benar selesai.
 ```
 
 ## Branch dan Commit

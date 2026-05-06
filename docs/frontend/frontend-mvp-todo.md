@@ -20,12 +20,12 @@ input stok masuk -> data tersimpan -> stok tampil FIFO -> stok keluar dicatat ->
 | API docs | Selesai | Contract, Postman collection, dan environment ada di `docs/api`. |
 | Frontend foundation | Selesai tahap 1 | API helper, shared types, app shell, bottom nav, dan page header sudah ada. |
 | `/` | Selesai sementara | Template Next.js sudah diganti menjadi entry point aplikasi ke route yang tersedia. |
-| `/stocks` | Sebagian lanjut | Sudah memakai API helper/type bersama dan error state eksplisit. |
+| `/stocks` | Selesai implementasi | Sudah memakai API helper/type bersama, error state eksplisit, dan data FIFO backend. |
 | Master data frontend | Selesai | `/fish-types` dan `/cold-storages` sudah terintegrasi GET/POST API. |
 | Stock-in frontend | Selesai | `/stocks/new` sudah terintegrasi GET master data dan POST `/stocks`. |
 | Stock-out form frontend | Selesai | `/stock-outs/new` sudah punya FIFO preview dan POST `/stock-outs`. |
 | Dashboard frontend | Selesai | `/dashboard` sudah terintegrasi summary dan recent movements. |
-| Halaman frontend lain | Belum | Riwayat pengeluaran belum ada. |
+| `/stock-outs` history | Selesai | Riwayat pengeluaran sudah terintegrasi GET `/stock-outs`. |
 
 ## API Base URL
 
@@ -50,9 +50,9 @@ docs/api/api-contract-v1.md
 | `/fish-types` | Medium | Selesai | `GET /fish-types`, `POST /fish-types` |
 | `/cold-storages` | Medium | Selesai | `GET /cold-storages`, `POST /cold-storages` |
 | `/stocks/new` | High | Selesai | `GET /fish-types`, `GET /cold-storages`, `POST /stocks` |
-| `/stocks` | High | Sebagian | `GET /stocks/fifo`, `GET /fish-types` |
+| `/stocks` | High | Selesai implementasi | `GET /stocks/fifo`, `GET /fish-types` |
 | `/stock-outs/new` | High | Selesai | `GET /fish-types`, `GET /stocks/fifo?fish_type_id={id}`, `POST /stock-outs` |
-| `/stock-outs` | Medium | Belum | `GET /stock-outs` |
+| `/stock-outs` | Medium | Selesai | `GET /stock-outs`, `GET /fish-types` |
 
 ## Checklist Foundation
 
@@ -216,14 +216,14 @@ Acceptance criteria:
 Acceptance criteria:
 
 ```txt
-[ ] Halaman /stock-outs tersedia.
-[ ] GET /stock-outs terintegrasi.
-[ ] Riwayat pengeluaran tampil.
-[ ] Items batch yang dikurangi tampil jika tersedia.
-[ ] Filter date_from/date_to boleh ditambahkan setelah list dasar stabil.
-[ ] Loading state tersedia.
-[ ] Error state tersedia.
-[ ] Empty state tersedia.
+[x] Halaman /stock-outs tersedia.
+[x] GET /stock-outs terintegrasi.
+[x] Riwayat pengeluaran tampil.
+[x] Items batch yang dikurangi tampil jika tersedia.
+[x] Filter fish_type_id, destination, date_from, dan date_to tersedia.
+[x] Loading state tersedia.
+[x] Error state tersedia.
+[x] Empty state tersedia.
 ```
 
 ## TypeScript Types Minimum
@@ -271,8 +271,8 @@ export type FIFOStock = {
 
 ## Urutan Kerja Berikutnya
 
-1. Buat `/stock-outs`.
-2. Jalankan demo flow end-to-end.
+1. Jalankan demo flow end-to-end.
+2. Validasi visual mobile lewat browser.
 
 ## Definition of Done Frontend MVP
 
@@ -281,11 +281,11 @@ export type FIFOStock = {
 [x] /fish-types bisa menambah jenis ikan.
 [x] /cold-storages bisa menambah cold storage.
 [x] /stocks/new bisa mencatat stok masuk.
-[ ] /stocks bisa menampilkan stok FIFO dari backend.
+[x] /stocks bisa menampilkan stok FIFO dari backend.
 [x] /stock-outs/new bisa mencatat pengeluaran dan menampilkan batch yang dipakai.
-[ ] /stock-outs bisa menampilkan riwayat pengeluaran.
-[ ] Error backend bisa dibaca user.
-[ ] Semua halaman utama punya loading state.
-[ ] Semua halaman utama punya empty state.
+[x] /stock-outs bisa menampilkan riwayat pengeluaran.
+[x] Error backend bisa dibaca user.
+[x] Semua halaman utama punya loading state.
+[x] Semua halaman utama punya empty state.
 [ ] Tampilan nyaman di mobile.
 ```

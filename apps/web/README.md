@@ -15,7 +15,7 @@ Update terakhir: 2026-05-06.
 [x] Stock-in form /stocks/new
 [x] Stock-out form /stock-outs/new
 [x] Dashboard /dashboard
-[ ] Stock-out history
+[x] Stock-out history /stock-outs
 ```
 
 ## Environment
