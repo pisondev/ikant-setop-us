@@ -1,87 +1,115 @@
-# 1. Context Diagram
+# Diagram Sistem | Ikan't Setop Us
+
+Dokumen ini adalah sumber diagram sistem. File PNG di folder ini adalah artefak visual; jika diagram berubah, update sumber di file ini terlebih dahulu.
+
+Update terakhir: 2026-05-06.
+
+## 1. Context Diagram
+
 ```mermaid
 flowchart LR
     Baso["Baso<br/>Admin Gudang / Pekerja Lapangan"]
-    Daeng["Daeng Syamsul<br/>Pemilik Usaha / Punggawa"]
-    System["Sistem Manajemen Inventori Ikan<br/>Mobile-First Web App"]
+    Daeng["Daeng Syamsul<br/>Pemilik Usaha"]
+    FE["Next.js Frontend<br/>Mobile-first web app"]
+    API["Go Fiber API<br/>/api/v1"]
     DB[("PostgreSQL Database")]
     Cold["Cold Storage"]
-    Buyer["Tujuan Pengeluaran<br/>Restoran / Pembeli / Pihak Lain"]
+    Buyer["Tujuan Pengeluaran<br/>Restoran / Pembeli"]
 
-    Baso -->|"Input ikan masuk<br/>jenis, kualitas, berat, waktu masuk, lokasi"| System
-    Baso -->|"Input ikan keluar<br/>berat keluar, tujuan, catatan"| System
-    Daeng -->|"Melihat dashboard<br/>stok, FIFO, alur masuk/keluar"| System
-    System -->|"Menyimpan & membaca data"| DB
-    System -->|"Menampilkan lokasi penyimpanan"| Cold
-    System -->|"Mencatat tujuan pengeluaran"| Buyer
-
-    DB -->|"Data stok, histori, lokasi, pengeluaran"| System
-    System -->|"Update stok real-time"| Daeng
-    System -->|"Daftar stok terurut FIFO"| Baso
+    Baso -->|"input stok masuk dan stok keluar"| FE
+    Daeng -->|"pantau dashboard dan FIFO"| FE
+    FE -->|"HTTP JSON"| API
+    API -->|"read/write data"| DB
+    API -->|"referensi lokasi"| Cold
+    API -->|"catat tujuan pengeluaran"| Buyer
+    DB -->|"stok, movement, master data"| API
+    API -->|"response API"| FE
 ```
 
-# 2. Usecase Diagram
+## 2. Backend Module Diagram
+
+Backend saat ini dipetakan per modul domain di `apps/api/internal/modules`.
+
+```mermaid
+flowchart TD
+    Main["cmd/api/main.go"]
+    V1["Fiber router /api/v1"]
+    Fish["modules/fish<br/>GET/POST /fish-types"]
+    Storage["modules/storage<br/>GET/POST /cold-storages"]
+    Stock["modules/stock<br/>stocks, FIFO, quality, location"]
+    Stockout["modules/stockout<br/>stock-out FIFO transaction"]
+    Dashboard["modules/dashboard<br/>summary, recent movements"]
+    DB[("Database")]
+
+    Main --> V1
+    V1 --> Fish
+    V1 --> Storage
+    V1 --> Stock
+    V1 --> Stockout
+    V1 --> Dashboard
+    Fish --> DB
+    Storage --> DB
+    Stock --> DB
+    Stockout --> DB
+    Dashboard --> DB
+```
+
+## 3. Use Case Diagram
+
 ```plantuml
 @startuml
 left to right direction
 
 actor "Baso\nAdmin Gudang / Pekerja Lapangan" as Baso
-actor "Daeng Syamsul\nPemilik Usaha / Punggawa" as Daeng
+actor "Daeng Syamsul\nPemilik Usaha" as Daeng
 
 rectangle "Sistem Manajemen Inventori Ikan" {
-  usecase "Mencatat Ikan Masuk" as UC1
-  usecase "Memilih Jenis Ikan" as UC2
-  usecase "Menginput Kualitas Ikan" as UC3
-  usecase "Menginput Berat Ikan" as UC4
-  usecase "Memilih Lokasi Cold Storage" as UC5
-
-  usecase "Melihat Daftar Stok" as UC6
-  usecase "Memfilter Stok per Jenis Ikan" as UC7
-  usecase "Melihat Urutan FIFO" as UC8
-
-  usecase "Mencatat Ikan Keluar" as UC9
-  usecase "Menginput Tujuan Pengeluaran" as UC10
-  usecase "Mengurangi Stok" as UC11
-
-  usecase "Melihat Dashboard Monitoring" as UC12
-  usecase "Melihat Riwayat Aktivitas Stok" as UC13
-  usecase "Memperbarui Kualitas Ikan" as UC14
+  usecase "Kelola Jenis Ikan" as UC1
+  usecase "Kelola Cold Storage" as UC2
+  usecase "Mencatat Ikan Masuk" as UC3
+  usecase "Melihat Stok FIFO" as UC4
+  usecase "Memfilter FIFO per Jenis Ikan" as UC5
+  usecase "Mencatat Ikan Keluar" as UC6
+  usecase "Mengurangi Stok Berdasarkan FIFO" as UC7
+  usecase "Melihat Dashboard" as UC8
+  usecase "Melihat Recent Movement" as UC9
+  usecase "Melihat Riwayat Pengeluaran" as UC10
+  usecase "Memperbarui Kualitas Stok" as UC11
+  usecase "Memperbarui Lokasi Stok" as UC12
 }
 
 Baso --> UC1
+Baso --> UC2
+Baso --> UC3
+Baso --> UC4
+Baso --> UC5
 Baso --> UC6
-Baso --> UC7
-Baso --> UC8
-Baso --> UC9
-Baso --> UC14
+Baso --> UC10
+Baso --> UC11
+Baso --> UC12
 
-Daeng --> UC6
-Daeng --> UC7
+Daeng --> UC4
+Daeng --> UC5
 Daeng --> UC8
-Daeng --> UC12
-Daeng --> UC13
-Daeng --> UC14
+Daeng --> UC9
+Daeng --> UC10
 
-UC1 .> UC2 : include
-UC1 .> UC3 : include
-UC1 .> UC4 : include
-UC1 .> UC5 : include
-
-UC9 .> UC10 : include
-UC9 .> UC11 : include
-
-UC6 .> UC8 : include
-UC7 .> UC8 : include
+UC6 .> UC7 : include
+UC5 .> UC4 : include
+UC8 .> UC9 : include
 
 @enduml
 ```
 
-# 3. ER Diagram
+## 4. ER Diagram
+
+Sumber DBML terpisah juga tersedia di `docs/diagram/diagram_erd.dbml`.
+
 ```dbml
 Project fish_inventory_fifo {
   database_type: "PostgreSQL"
   Note: '''
-  Sistem Manajemen Inventori Ikan berbasis FIFO untuk pencatatan stok masuk,
+  Sistem manajemen inventori ikan berbasis FIFO untuk stok masuk,
   stok keluar, lokasi cold storage, kualitas ikan, dan histori aktivitas stok.
   '''
 }
@@ -118,11 +146,6 @@ Table users {
   password_hash text
   created_at timestamp [not null]
   updated_at timestamp [not null]
-
-  Note: '''
-  Menyimpan data pengguna sistem.
-  Untuk MVP, role bisa digunakan secara sederhana atau hanya sebagai data persona.
-  '''
 }
 
 Table fish_types {
@@ -132,10 +155,6 @@ Table fish_types {
   description text
   created_at timestamp [not null]
   updated_at timestamp [not null]
-
-  Note: '''
-  Master data jenis ikan, misalnya tuna, tongkol, cakalang, kakap.
-  '''
 }
 
 Table cold_storages {
@@ -145,11 +164,6 @@ Table cold_storages {
   description text
   created_at timestamp [not null]
   updated_at timestamp [not null]
-
-  Note: '''
-  Data lokasi penyimpanan ikan.
-  Bisa berupa Cold Storage A, Cold Storage B, rak, zona, atau label lokasi sederhana.
-  '''
 }
 
 Table stock_batches {
@@ -165,11 +179,6 @@ Table stock_batches {
   created_by uuid
   created_at timestamp [not null]
   updated_at timestamp [not null]
-
-  Note: '''
-  Satu baris mewakili satu batch stok ikan yang masuk.
-  FIFO dihitung berdasarkan entered_at.
-  '''
 }
 
 Table stock_outs {
@@ -181,11 +190,6 @@ Table stock_outs {
   created_by uuid
   created_at timestamp [not null]
   updated_at timestamp [not null]
-
-  Note: '''
-  Header transaksi pengeluaran ikan.
-  Detail batch yang dikurangi disimpan pada stock_out_items.
-  '''
 }
 
 Table stock_out_items {
@@ -194,11 +198,6 @@ Table stock_out_items {
   stock_batch_id uuid [not null]
   weight_kg decimal(10,2) [not null]
   created_at timestamp [not null]
-
-  Note: '''
-  Detail batch yang terpakai saat pengeluaran ikan.
-  Satu pengeluaran bisa mengambil dari beberapa batch sesuai FIFO.
-  '''
 }
 
 Table stock_movements {
@@ -213,51 +212,80 @@ Table stock_movements {
   description text
   created_by uuid
   created_at timestamp [not null]
-
-  Note: '''
-  Histori aktivitas stok.
-  Mencatat stok masuk, stok keluar, perubahan kualitas, perubahan lokasi, dan adjustment.
-  '''
 }
 
 Ref: stock_batches.fish_type_id > fish_types.id
 Ref: stock_batches.cold_storage_id > cold_storages.id
 Ref: stock_batches.created_by > users.id
-
 Ref: stock_outs.created_by > users.id
 Ref: stock_out_items.stock_out_id > stock_outs.id
 Ref: stock_out_items.stock_batch_id > stock_batches.id
-
 Ref: stock_movements.stock_batch_id > stock_batches.id
 Ref: stock_movements.previous_cold_storage_id > cold_storages.id
 Ref: stock_movements.new_cold_storage_id > cold_storages.id
 Ref: stock_movements.created_by > users.id
 ```
 
-# 4. Sequence Diagram
+## 5. Sequence Diagram - Stock In
+
 ```mermaid
 sequenceDiagram
-    actor User as Baso / Daeng
+    actor User as Baso
     participant FE as Next.js Frontend
-    participant API as Go Fiber Backend
-    participant DB as PostgreSQL
+    participant API as Go Fiber API /api/v1
+    participant DB as Database
 
-    User->>FE: Buka halaman pengeluaran ikan
-    FE->>API: GET /api/fish-types
-    API->>DB: Ambil daftar jenis ikan
+    User->>FE: Buka /stocks/new
+    FE->>API: GET /fish-types
+    API->>DB: Ambil master jenis ikan
     DB-->>API: Data jenis ikan
-    API-->>FE: Response jenis ikan
-
-    User->>FE: Pilih jenis ikan dan input berat keluar
-    FE->>API: POST /api/stock-outs
-    API->>DB: Cari batch stok berdasarkan jenis ikan
-    DB-->>API: Batch stok terurut FIFO
-
-    API->>API: Validasi stok mencukupi
-    API->>DB: Kurangi stok dari batch terlama
-    API->>DB: Simpan histori pengeluaran
+    API-->>FE: Fish types
+    FE->>API: GET /cold-storages
+    API->>DB: Ambil master cold storage
+    DB-->>API: Data cold storage
+    API-->>FE: Cold storages
+    User->>FE: Isi form stok masuk
+    FE->>API: POST /stocks
+    API->>DB: Insert stock_batches
+    API->>DB: Insert stock_movements type in
     DB-->>API: Transaksi berhasil
-
-    API-->>FE: Response stok berhasil dikeluarkan
-    FE-->>User: Tampilkan update stok dan dashboard
+    API-->>FE: Stock batch created
+    FE-->>User: Tampilkan sukses / arahkan ke /stocks
 ```
+
+## 6. Sequence Diagram - Stock Out FIFO
+
+```mermaid
+sequenceDiagram
+    actor User as Baso
+    participant FE as Next.js Frontend
+    participant API as Go Fiber API /api/v1
+    participant DB as Database
+
+    User->>FE: Buka /stock-outs/new
+    FE->>API: GET /fish-types
+    API-->>FE: Fish types
+    User->>FE: Pilih jenis ikan
+    FE->>API: GET /stocks/fifo?fish_type_id={id}
+    API->>DB: Ambil batch available terurut entered_at
+    DB-->>API: FIFO batches
+    API-->>FE: FIFO preview
+    User->>FE: Isi berat keluar dan tujuan
+    FE->>API: POST /stock-outs
+    API->>DB: Begin transaction
+    API->>DB: Lock batch available FOR UPDATE
+    API->>API: Validasi stok cukup
+    API->>DB: Insert stock_outs
+    API->>DB: Insert stock_out_items
+    API->>DB: Update remaining_weight_kg dan status batch
+    API->>DB: Insert stock_movements type out
+    API->>DB: Commit transaction
+    API-->>FE: Stock out created dengan items
+    FE-->>User: Tampilkan batch yang dipakai
+```
+
+## 7. Catatan Sinkronisasi
+
+- Endpoint sequence memakai base path `/api/v1`.
+- Update kualitas dan lokasi sudah ada di backend, tetapi bukan prioritas halaman frontend MVP.
+- Auth dan role user belum diimplementasikan di aplikasi MVP walaupun tabel `users` sudah ada di schema.

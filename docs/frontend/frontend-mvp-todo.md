@@ -1,363 +1,140 @@
-# Frontend MVP Todo | "Ikan't Setop Us"
+# Frontend MVP Todo | Ikan't Setop Us
 
-Dokumen ini menjadi acuan pengerjaan frontend MVP untuk aplikasi FishFlow: FIFO Fish Inventory Management System.
+Dokumen ini adalah single source of truth untuk status frontend MVP. Dokumen pembagian tugas di `docs/jobdesc_progress.md` harus merujuk ke checklist ini agar progress tidak dobel dan tidak saling bertentangan.
 
-Frontend dibuat menggunakan **Next.js** dengan pendekatan **mobile-first UI**. Fokus MVP adalah membuktikan alur utama aplikasi berjalan end-to-end:
+Update terakhir: 2026-05-06.
+
+## Target MVP
+
+Alur utama yang harus bisa didemokan:
 
 ```txt
-Input stok ikan masuk
-→ data tersimpan di database
-→ stok tampil berdasarkan FIFO
-→ stok keluar dapat dicatat
-→ dashboard ikut berubah
+input stok masuk -> data tersimpan -> stok tampil FIFO -> stok keluar dicatat -> dashboard berubah
 ```
 
----
+## Status Aktual Repo
 
-## 1. Prinsip Frontend MVP
+| Area | Status | Catatan |
+|---|---|---|
+| Backend API | Selesai | Semua endpoint MVP tersedia di `/api/v1` dan sudah dites. |
+| API docs | Selesai | Contract, Postman collection, dan environment ada di `docs/api`. |
+| Frontend foundation | Belum | Belum ada `src/lib/api.ts`, `src/types/api.ts`, app shell, atau bottom nav. |
+| `/` | Belum | Masih template default Next.js. |
+| `/stocks` | Sebagian | Ada halaman FIFO list, sudah fetch API dan fallback mock, tetapi belum memakai helper/type bersama. |
+| Halaman frontend lain | Belum | Dashboard, master data, stock-in, stock-out, dan riwayat belum ada. |
 
-### 1.1 Mobile-first
+## API Base URL
 
-Aplikasi harus nyaman digunakan dari layar HP karena user utama di lapangan adalah pekerja seperti Baso.
-
-Prioritas desain:
-
-- tombol besar,
-- form pendek,
-- minim typing,
-- mudah digunakan satu tangan,
-- informasi stok mudah dibaca,
-- layout tetap rapi di layar kecil.
-
-### 1.2 MVP Scope
-
-Frontend hanya fokus pada fitur inti:
-
-- dashboard monitoring,
-- master jenis ikan,
-- master cold storage,
-- input stok ikan masuk,
-- daftar stok FIFO,
-- input ikan keluar,
-- riwayat pengeluaran sederhana,
-- recent movement.
-
-Fitur yang tidak masuk MVP:
-
-- login/register,
-- role-based access control,
-- payment,
-- marketplace,
-- integrasi alat timbang,
-- sensor cold storage,
-- notifikasi realtime,
-- grafik kompleks,
-- halaman detail stok yang kompleks.
-
----
-
-## 2. Environment
-
-Frontend mengambil API dari backend Go Fiber.
+Frontend harus mengambil backend dari:
 
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8081/api/v1
 ```
 
-Semua request API sebaiknya dibuat melalui helper:
+API contract:
 
 ```txt
-src/lib/api.ts
+docs/api/api-contract-v1.md
 ```
 
----
+## Struktur Route Target
 
-## 3. Struktur Route MVP
+| Route | Prioritas | Status | API |
+|---|---:|---|---|
+| `/` | High | Belum | Tidak ada |
+| `/dashboard` | High | Belum | `GET /dashboard/summary`, `GET /dashboard/recent-movements` |
+| `/fish-types` | Medium | Belum | `GET /fish-types`, `POST /fish-types` |
+| `/cold-storages` | Medium | Belum | `GET /cold-storages`, `POST /cold-storages` |
+| `/stocks/new` | High | Belum | `GET /fish-types`, `GET /cold-storages`, `POST /stocks` |
+| `/stocks` | High | Sebagian | `GET /stocks/fifo`, `GET /fish-types` |
+| `/stock-outs/new` | High | Belum | `GET /fish-types`, `GET /stocks/fifo?fish_type_id={id}`, `POST /stock-outs` |
+| `/stock-outs` | Medium | Belum | `GET /stock-outs` |
 
-Struktur route yang disarankan:
+## Checklist Foundation
 
 ```txt
-src/app/
-├── page.tsx
-├── dashboard/
-│   └── page.tsx
-├── fish-types/
-│   └── page.tsx
-├── cold-storages/
-│   └── page.tsx
-├── stocks/
-│   ├── page.tsx
-│   └── new/
-│       └── page.tsx
-└── stock-outs/
-    ├── page.tsx
-    └── new/
-        └── page.tsx
+[ ] Buat API helper di apps/web/src/lib/api.ts atau apps/web/lib/api.ts.
+[ ] Buat TypeScript type API bersama.
+[ ] Setup NEXT_PUBLIC_API_BASE_URL di apps/web/.env.local.
+[ ] Buat layout mobile-first reusable.
+[ ] Buat bottom navigation.
+[ ] Buat page header reusable.
+[ ] Ubah / dari template Next.js menjadi redirect/link ke dashboard.
+[ ] Hapus fallback mock dari /stocks setelah backend siap dipakai di dev.
+[ ] Pastikan loading, error, dan empty state punya pola yang konsisten.
 ```
 
-Halaman yang sengaja tidak diwajibkan untuk MVP:
+## Checklist Per Halaman
+
+### `/`
+
+Acceptance criteria:
 
 ```txt
-/stocks/[id]
+[ ] User membuka / dan langsung diarahkan ke /dashboard atau melihat tombol masuk dashboard.
+[ ] Tidak ada konten template Next.js tersisa.
 ```
 
-Alasannya, update kualitas dan update lokasi bisa ditunda agar MVP tidak terlalu kompleks. Jika waktu masih cukup, halaman detail stok bisa ditambahkan sebagai fitur tambahan.
+### `/dashboard`
 
----
+Informasi yang ditampilkan:
 
-# 4. Page Todo
+- total berat stok tersedia,
+- total batch stok,
+- total batch available,
+- total batch depleted,
+- stok masuk hari ini,
+- stok keluar hari ini,
+- ringkasan stok per jenis ikan,
+- ringkasan stok per cold storage,
+- recent movements.
 
----
+Acceptance criteria:
 
-## 4.1 `/`
-
-### Nama Halaman
-
-Home / Redirect Page
-
-### Tujuan
-
-Halaman awal aplikasi. Untuk MVP, halaman ini boleh langsung redirect ke dashboard.
-
-### Fitur
-
-- Menampilkan nama aplikasi secara singkat, atau
-- Redirect otomatis ke `/dashboard`.
-
-### API yang Dibutuhkan
-
-Tidak ada.
-
-### MVP Priority
-
-High
-
-### Acceptance Criteria
-
-- User membuka `/`.
-- User langsung diarahkan ke `/dashboard`, atau melihat tombol masuk ke dashboard.
-
----
-
-## 4.2 `/dashboard`
-
-### Nama Halaman
-
-Dashboard Monitoring
-
-### Tujuan
-
-Memberikan ringkasan stok ikan kepada Daeng Syamsul atau pengelola gudang.
-
-### Informasi yang Ditampilkan
-
-- Total berat stok tersedia.
-- Total batch stok.
-- Total batch available.
-- Total batch depleted.
-- Total ikan masuk hari ini.
-- Total ikan keluar hari ini.
-- Ringkasan stok berdasarkan jenis ikan.
-- Ringkasan stok berdasarkan cold storage.
-- Recent movements.
-
-### Komponen UI
-
-- Summary card total stok.
-- Summary card ikan masuk hari ini.
-- Summary card ikan keluar hari ini.
-- List stok per jenis ikan.
-- List stok per cold storage.
-- Recent movement list.
-- Tombol cepat:
-  - Tambah Stok Masuk
-  - Catat Ikan Keluar
-  - Lihat FIFO
-
-### API yang Dibutuhkan
-
-```http
-GET /dashboard/summary
-GET /dashboard/recent-movements
+```txt
+[ ] Halaman /dashboard tersedia.
+[ ] GET /dashboard/summary terintegrasi.
+[ ] GET /dashboard/recent-movements terintegrasi.
+[ ] Loading state tersedia.
+[ ] Error state tersedia.
+[ ] Empty recent movement tetap rapi.
+[ ] Angka berubah setelah stok masuk.
+[ ] Angka berubah setelah stok keluar.
 ```
 
-### State
+### `/fish-types`
 
-- loading
-- error
-- success
-- empty recent movement
+Acceptance criteria:
 
-### MVP Priority
-
-High
-
-### Acceptance Criteria
-
-- User dapat melihat ringkasan stok.
-- Data berubah setelah stok masuk atau stok keluar dibuat.
-- Recent movement menampilkan aktivitas terakhir.
-
----
-
-## 4.3 `/fish-types`
-
-### Nama Halaman
-
-Master Jenis Ikan
-
-### Tujuan
-
-Mengelola daftar jenis ikan yang akan digunakan pada input stok.
-
-### Informasi yang Ditampilkan
-
-- Nama jenis ikan.
-- Gambar ikan jika ada.
-- Deskripsi singkat jika ada.
-
-### Fitur
-
-- Melihat daftar jenis ikan.
-- Menambahkan jenis ikan baru.
-
-### Form Tambah Jenis Ikan
-
-Field:
-
-- `name`
-- `image_url`
-- `description`
-
-### API yang Dibutuhkan
-
-```http
-GET /fish-types
-POST /fish-types
+```txt
+[ ] Halaman /fish-types tersedia.
+[ ] GET /fish-types terintegrasi.
+[ ] POST /fish-types terintegrasi.
+[ ] Form field name, image_url, description tersedia.
+[ ] Data baru muncul setelah submit.
+[ ] Loading state tersedia.
+[ ] Error state tersedia.
+[ ] Empty state tersedia.
 ```
 
-### State
+### `/cold-storages`
 
-- loading list
-- submit loading
-- error
-- empty state
+Acceptance criteria:
 
-### MVP Priority
-
-Medium
-
-### Acceptance Criteria
-
-- User dapat melihat daftar jenis ikan.
-- User dapat menambah jenis ikan.
-- Jenis ikan yang baru ditambahkan bisa dipakai di halaman input stok masuk dan input ikan keluar.
-
----
-
-## 4.4 `/cold-storages`
-
-### Nama Halaman
-
-Master Cold Storage
-
-### Tujuan
-
-Mengelola daftar lokasi penyimpanan ikan.
-
-### Informasi yang Ditampilkan
-
-- Nama cold storage.
-- Label lokasi.
-- Deskripsi.
-
-### Fitur
-
-- Melihat daftar cold storage.
-- Menambahkan lokasi cold storage baru.
-
-### Form Tambah Cold Storage
-
-Field:
-
-- `name`
-- `location_label`
-- `description`
-
-### API yang Dibutuhkan
-
-```http
-GET /cold-storages
-POST /cold-storages
+```txt
+[ ] Halaman /cold-storages tersedia.
+[ ] GET /cold-storages terintegrasi.
+[ ] POST /cold-storages terintegrasi.
+[ ] Form field name, location_label, description tersedia.
+[ ] Data baru muncul setelah submit.
+[ ] Loading state tersedia.
+[ ] Error state tersedia.
+[ ] Empty state tersedia.
 ```
 
-### State
+### `/stocks/new`
 
-- loading list
-- submit loading
-- error
-- empty state
-
-### MVP Priority
-
-Medium
-
-### Acceptance Criteria
-
-- User dapat melihat daftar cold storage.
-- User dapat menambah cold storage.
-- Cold storage yang baru ditambahkan bisa dipakai di halaman input stok masuk.
-
----
-
-## 4.5 `/stocks/new`
-
-### Nama Halaman
-
-Input Stok Ikan Masuk
-
-### Tujuan
-
-Digunakan Baso atau admin gudang untuk mencatat ikan yang baru masuk setelah proses pembongkaran, pemilahan, dan penimbangan.
-
-### Prinsip UI
-
-- Mobile-first.
-- Form pendek.
-- Input cepat.
-- Tombol besar.
-- Dropdown/select untuk data master.
-
-### Form Field
-
-Wajib:
-
-- `fish_type_id`
-- `quality`
-- `initial_weight_kg`
-- `entered_at`
-- `cold_storage_id`
-
-Opsional:
-
-- `notes`
-
-### Input Behavior
-
-- `remaining_weight_kg` tidak diinput dari frontend.
-- Backend otomatis mengisi `remaining_weight_kg = initial_weight_kg`.
-- Backend otomatis mengisi `status = available`.
-- Backend membuat histori movement type `in`.
-
-### API yang Dibutuhkan
-
-```http
-GET /fish-types
-GET /cold-storages
-POST /stocks
-```
-
-### Request Body
+Request body:
 
 ```json
 {
@@ -370,404 +147,84 @@ POST /stocks
 }
 ```
 
-### Setelah Submit Berhasil
-
-Redirect ke:
+Acceptance criteria:
 
 ```txt
-/stocks
+[ ] Halaman /stocks/new tersedia.
+[ ] GET /fish-types terintegrasi.
+[ ] GET /cold-storages terintegrasi.
+[ ] POST /stocks terintegrasi.
+[ ] User bisa memilih jenis ikan.
+[ ] User bisa memilih kualitas ikan.
+[ ] User bisa input berat ikan.
+[ ] User bisa memilih waktu masuk.
+[ ] User bisa memilih cold storage.
+[ ] Jika sukses, user diarahkan ke /stocks atau mendapat tombol lihat stok.
+[ ] Error validasi backend tampil.
 ```
 
-atau tampilkan tombol:
+### `/stocks`
+
+Status saat ini: sebagian selesai di `apps/web/app/stocks/page.tsx`.
+
+Yang sudah ada:
 
 ```txt
-Lihat Daftar Stok
+[x] Halaman /stocks tersedia.
+[x] Fetch GET /fish-types.
+[x] Fetch GET /stocks/fifo.
+[x] Filter jenis ikan memanggil /stocks/fifo?fish_type_id={id}.
+[x] Loading state tersedia.
+[x] Empty state tersedia.
+[x] Fallback mock tersedia ketika API gagal.
 ```
 
-### State
-
-- loading master data
-- submit loading
-- validation error
-- success
-- failed submit
-
-### MVP Priority
-
-High
-
-### Acceptance Criteria
-
-- User dapat mencatat stok ikan masuk.
-- Data stok tersimpan di database.
-- Stok baru muncul di daftar FIFO.
-- Dashboard berubah setelah stok masuk.
-
----
-
-## 4.6 `/stocks`
-
-### Nama Halaman
-
-Daftar Stok FIFO
-
-### Tujuan
-
-Menampilkan stok ikan yang tersedia dan membantu user melihat urutan FIFO.
-
-### Informasi yang Ditampilkan
-
-- Ranking FIFO.
-- Jenis ikan.
-- Kualitas ikan.
-- Berat tersisa.
-- Waktu masuk.
-- Lokasi cold storage.
-- Status stok.
-
-### Fitur
-
-- Melihat stok berdasarkan FIFO keseluruhan.
-- Filter berdasarkan jenis ikan untuk melihat FIFO per jenis ikan.
-- Tombol menuju input stok masuk.
-- Tombol menuju input ikan keluar.
-- Tampilan stok dalam bentuk card agar nyaman di mobile.
-
-### API yang Dibutuhkan
-
-```http
-GET /stocks/fifo
-GET /fish-types
-```
-
-### Query yang Digunakan
-
-Untuk FIFO keseluruhan:
-
-```http
-GET /stocks/fifo
-```
-
-Untuk FIFO per jenis ikan:
-
-```http
-GET /stocks/fifo?fish_type_id={fish_type_id}
-```
-
-### State
-
-- loading
-- error
-- empty stock
-- filter active
-- success
-
-### MVP Priority
-
-High
-
-### Acceptance Criteria
-
-- User dapat melihat stok terurut FIFO.
-- User dapat memilih jenis ikan dan melihat FIFO per jenis ikan.
-- Stok dengan `remaining_weight_kg = 0` tidak diprioritaskan sebagai stok available.
-- User dapat memahami stok mana yang sebaiknya dikeluarkan lebih dulu.
-
----
-
-## 4.7 `/stock-outs/new`
-
-### Nama Halaman
-
-Input Ikan Keluar
-
-### Tujuan
-
-Mencatat pengeluaran ikan dari cold storage dan mengurangi stok berdasarkan FIFO.
-
-### Prinsip UI
-
-- User memilih jenis ikan.
-- User memasukkan berat keluar.
-- User mengisi tujuan pengeluaran.
-- Backend menentukan batch yang dikurangi berdasarkan FIFO.
-- Frontend menampilkan hasil batch yang dipakai.
-
-### Form Field
-
-Wajib:
-
-- `fish_type_id`
-- `total_weight_kg`
-- `destination`
-- `out_at`
-
-Opsional:
-
-- `notes`
-
-### API yang Dibutuhkan
-
-```http
-GET /fish-types
-GET /stocks/fifo?fish_type_id={fish_type_id}
-POST /stock-outs
-```
-
-### Request Body
-
-```json
-{
-  "fish_type_id": "uuid",
-  "total_weight_kg": 40,
-  "destination": "Restoran Laut Makassar",
-  "out_at": "2026-05-01T12:00:00Z",
-  "notes": "Pengeluaran untuk pesanan makan siang"
-}
-```
-
-### Response Penting
-
-Frontend perlu menampilkan `items` dari response.
-
-```json
-{
-  "id": "uuid",
-  "fish_type_id": "uuid",
-  "destination": "Restoran Laut Makassar",
-  "total_weight_kg": 40,
-  "out_at": "2026-05-01T12:00:00Z",
-  "items": [
-    {
-      "stock_batch_id": "uuid",
-      "weight_kg": 25
-    },
-    {
-      "stock_batch_id": "uuid",
-      "weight_kg": 15
-    }
-  ],
-  "created_at": "2026-05-01T12:01:00Z"
-}
-```
-
-### Preview FIFO Sebelum Submit
-
-Setelah user memilih jenis ikan, frontend menampilkan daftar stok available untuk jenis ikan tersebut:
-
-```http
-GET /stocks/fifo?fish_type_id={fish_type_id}
-```
-
-Tujuannya agar user tahu batch mana yang akan diprioritaskan.
-
-### Setelah Submit Berhasil
-
-Tampilkan summary:
+Yang masih perlu:
 
 ```txt
-Pengeluaran berhasil dicatat.
-Sistem mengambil stok dari beberapa batch berdasarkan FIFO.
+[ ] Gunakan API helper bersama.
+[ ] Gunakan TypeScript type bersama.
+[ ] Perbaiki tulisan/karakter rusak pada empty state.
+[ ] Tambahkan error state eksplisit, bukan langsung fallback diam-diam.
+[ ] Tambahkan tombol menuju /stocks/new dan /stock-outs/new.
+[ ] Validasi tampilan mobile setelah layout global tersedia.
+[ ] Hapus mock fallback ketika backend menjadi dependency wajib.
 ```
 
-Lalu sediakan tombol:
+### `/stock-outs/new`
 
-- Lihat Daftar Stok
-- Lihat Dashboard
-- Catat Pengeluaran Lagi
-
-### State
-
-- loading fish types
-- loading FIFO preview
-- submit loading
-- insufficient stock error
-- success
-- failed submit
-
-### MVP Priority
-
-High
-
-### Acceptance Criteria
-
-- User dapat mencatat ikan keluar.
-- Backend mengurangi stok berdasarkan FIFO.
-- Jika stok tidak cukup, frontend menampilkan error dari backend.
-- Setelah pengeluaran berhasil, dashboard dan daftar stok berubah.
-
----
-
-## 4.8 `/stock-outs`
-
-### Nama Halaman
-
-Riwayat Pengeluaran Ikan
-
-### Tujuan
-
-Menampilkan riwayat ikan keluar dari cold storage.
-
-### Informasi yang Ditampilkan
-
-- Tujuan pengeluaran.
-- Total berat keluar.
-- Waktu keluar.
-- Catatan.
-- Batch yang dikurangi jika tersedia.
-- Jenis ikan pada item pengeluaran.
-
-### Fitur
-
-- Melihat daftar pengeluaran.
-- Link ke halaman input ikan keluar.
-
-### API yang Dibutuhkan
-
-```http
-GET /stock-outs
-```
-
-### Optional Query
-
-```http
-GET /stock-outs?date_from=2026-05-01&date_to=2026-05-02
-```
-
-### State
-
-- loading
-- error
-- empty state
-- success
-
-### MVP Priority
-
-Medium
-
-### Acceptance Criteria
-
-- User dapat melihat riwayat ikan keluar.
-- Data pengeluaran yang baru dibuat muncul di daftar.
-- User dapat memahami tujuan pengeluaran dan jumlah berat keluar.
-
----
-
-# 5. Komponen Frontend yang Disarankan
-
-## 5.1 Layout Components
+Acceptance criteria:
 
 ```txt
-src/components/layout/
-├── app-shell.tsx
-├── bottom-nav.tsx
-└── page-header.tsx
+[ ] Halaman /stock-outs/new tersedia.
+[ ] GET /fish-types terintegrasi.
+[ ] FIFO preview tampil dari GET /stocks/fifo?fish_type_id={id}.
+[ ] POST /stock-outs terintegrasi.
+[ ] User bisa input fish_type_id, total_weight_kg, destination, out_at, notes.
+[ ] Response data.items ditampilkan sebagai summary batch yang dipakai.
+[ ] Error insufficient stock dari backend tampil jelas.
+[ ] Setelah sukses, user bisa menuju /stocks, /dashboard, atau input lagi.
 ```
 
-### Fungsi
+### `/stock-outs`
 
-- `AppShell`: wrapper layout mobile.
-- `BottomNav`: navigasi bawah untuk mobile.
-- `PageHeader`: judul halaman dan action button.
-
-Menu bottom nav MVP:
+Acceptance criteria:
 
 ```txt
-Dashboard
-Stok
-Tambah
-Keluar
-Master
+[ ] Halaman /stock-outs tersedia.
+[ ] GET /stock-outs terintegrasi.
+[ ] Riwayat pengeluaran tampil.
+[ ] Items batch yang dikurangi tampil jika tersedia.
+[ ] Filter date_from/date_to boleh ditambahkan setelah list dasar stabil.
+[ ] Loading state tersedia.
+[ ] Error state tersedia.
+[ ] Empty state tersedia.
 ```
 
----
-
-## 5.2 Dashboard Components
-
-```txt
-src/components/dashboard/
-├── summary-card.tsx
-├── fish-type-summary-list.tsx
-├── storage-summary-list.tsx
-└── recent-movement-list.tsx
-```
-
----
-
-## 5.3 Stock Components
-
-```txt
-src/components/stocks/
-├── stock-card.tsx
-├── fifo-rank-badge.tsx
-├── quality-badge.tsx
-└── stock-empty-state.tsx
-```
-
----
-
-## 5.4 Form Components
-
-```txt
-src/components/forms/
-├── fish-type-select.tsx
-├── cold-storage-select.tsx
-├── quality-select.tsx
-├── weight-input.tsx
-└── submit-button.tsx
-```
-
----
-
-# 6. API Helper Todo
-
-Buat file:
-
-```txt
-src/lib/api.ts
-```
-
-Fungsi dasar yang perlu ada:
-
-```txt
-apiGet(path)
-apiPost(path, body)
-apiPatch(path, body)
-```
-
-Base URL:
-
-```txt
-process.env.NEXT_PUBLIC_API_BASE_URL
-```
-
-Response mengikuti format backend:
-
-```ts
-export type ApiResponse<T> = {
-  success: boolean;
-  message: string;
-  data?: T;
-  errors?: unknown;
-  meta?: unknown;
-};
-```
-
----
-
-# 7. TypeScript Types Todo
-
-Buat file:
-
-```txt
-src/types/api.ts
-```
-
-Types minimum:
+## TypeScript Types Minimum
 
 ```ts
 export type FishQuality = "baik" | "sedang" | "buruk";
-
 export type StockStatus = "available" | "depleted";
 
 export type ApiResponse<T> = {
@@ -775,7 +232,6 @@ export type ApiResponse<T> = {
   message: string;
   data?: T;
   errors?: unknown;
-  meta?: unknown;
 };
 
 export type FishType = {
@@ -806,180 +262,32 @@ export type FIFOStock = {
   location_label?: string | null;
   fifo_rank: number;
 };
-
-export type DashboardSummary = {
-  total_available_weight_kg: number;
-  total_stock_batches: number;
-  total_available_batches: number;
-  total_depleted_batches: number;
-  today_stock_in_kg: number;
-  today_stock_out_kg: number;
-  fish_type_summary: {
-    fish_type_id: string;
-    fish_type_name: string;
-    available_weight_kg: number;
-    available_batches: number;
-  }[];
-  cold_storage_summary: {
-    cold_storage_id: string;
-    cold_storage_name: string;
-    available_weight_kg: number;
-    available_batches: number;
-  }[];
-};
-
-export type RecentMovement = {
-  id: string;
-  stock_batch_id: string;
-  movement_type: "in" | "out" | "quality_update" | "location_update" | "adjustment";
-  fish_type_name: string;
-  weight_kg?: number | null;
-  description: string;
-  created_at: string;
-};
-
-export type StockOut = {
-  id: string;
-  destination: string;
-  total_weight_kg: number;
-  out_at: string;
-  notes?: string | null;
-  items: {
-    stock_batch_id: string;
-    fish_type_name?: string;
-    weight_kg: number;
-  }[];
-  created_at: string;
-};
 ```
 
----
+## Urutan Kerja Berikutnya
 
-# 8. Timeline Pengerjaan Frontend
+1. Selesaikan frontend foundation: API helper, type bersama, layout mobile.
+2. Ganti `/` dari template Next.js.
+3. Rapikan `/stocks` agar memakai helper/type dan error state yang jelas.
+4. Buat `/fish-types` dan `/cold-storages` supaya data master bisa dibuat dari UI.
+5. Buat `/stocks/new`.
+6. Buat `/stock-outs/new`.
+7. Buat `/dashboard`.
+8. Buat `/stock-outs`.
+9. Jalankan demo flow end-to-end.
 
-## Tahap 1 : Foundation
-
-- Setup `NEXT_PUBLIC_API_BASE_URL`.
-- Buat `src/lib/api.ts`.
-- Buat `src/types/api.ts`.
-- Buat layout mobile sederhana.
-- Buat bottom navigation.
-
-## Tahap 2 : Master Data
-
-- Buat `/fish-types`.
-- Buat `/cold-storages`.
-
-Tujuannya agar data master tersedia untuk form stok.
-
-## Tahap 3 : Stok Masuk
-
-- Buat `/stocks/new`.
-- Integrasi `GET /fish-types`.
-- Integrasi `GET /cold-storages`.
-- Integrasi `POST /stocks`.
-
-Ini fitur input utama untuk Baso.
-
-## Tahap 4 : FIFO List
-
-- Buat `/stocks`.
-- Integrasi `GET /stocks/fifo`.
-- Tambahkan filter per jenis ikan.
-- Tampilkan urutan FIFO.
-
-Ini fitur utama untuk menjawab masalah FIFO.
-
-## Tahap 5 : Stok Keluar
-
-- Buat `/stock-outs/new`.
-- Integrasi `GET /fish-types`.
-- Integrasi `GET /stocks/fifo?fish_type_id={id}`.
-- Integrasi `POST /stock-outs`.
-
-Ini membuktikan proses end-to-end.
-
-## Tahap 6 : Dashboard
-
-- Buat `/dashboard`.
-- Integrasi `GET /dashboard/summary`.
-- Integrasi `GET /dashboard/recent-movements`.
-
-## Tahap 7 : Riwayat Pengeluaran
-
-- Buat `/stock-outs`.
-- Integrasi `GET /stock-outs`.
-
-## Tahap 8 : Polish MVP
-
-- Tambahkan loading state.
-- Tambahkan error state.
-- Tambahkan empty state.
-- Rapikan mobile spacing.
-- Pastikan tombol utama mudah ditekan.
-- Pastikan demo flow lancar.
-
----
-
-# 9. Demo Flow
+## Definition of Done Frontend MVP
 
 ```txt
-1. Buka dashboard.
-2. Tambah jenis ikan jika belum ada.
-3. Tambah cold storage jika belum ada.
-4. Input stok Tuna 50 kg kualitas baik ke Cold Storage A.
-5. Input stok Tuna 30 kg kualitas sedang ke Cold Storage B.
-6. Buka daftar stok FIFO.
-7. Pilih filter Tuna.
-8. Tampilkan batch Tuna terurut FIFO.
-9. Catat pengeluaran Tuna 40 kg ke Restoran Laut Makassar.
-10. Sistem mengurangi stok dari batch terlama.
-11. Buka dashboard.
-12. Dashboard menunjukkan stok dan recent movement terbaru.
+[ ] /dashboard bisa menampilkan summary dan recent movement dari backend.
+[ ] /fish-types bisa menambah jenis ikan.
+[ ] /cold-storages bisa menambah cold storage.
+[ ] /stocks/new bisa mencatat stok masuk.
+[ ] /stocks bisa menampilkan stok FIFO dari backend.
+[ ] /stock-outs/new bisa mencatat pengeluaran dan menampilkan batch yang dipakai.
+[ ] /stock-outs bisa menampilkan riwayat pengeluaran.
+[ ] Error backend bisa dibaca user.
+[ ] Semua halaman utama punya loading state.
+[ ] Semua halaman utama punya empty state.
+[ ] Tampilan nyaman di mobile.
 ```
-
----
-
-# 10. Prioritas Halaman (Plan B)
-
-Jika waktu sangat terbatas, kerjakan halaman dengan urutan ini:
-
-```txt
-1. /stocks/new
-2. /stocks
-3. /stock-outs/new
-4. /dashboard
-5. /fish-types
-6. /cold-storages
-7. /stock-outs
-```
-
-Minimum demo:
-
-```txt
-/stocks/new
-/stocks
-/stock-outs/new
-/dashboard
-```
-
-Dengan 4 halaman itu, MVP sudah bisa menunjukkan:
-
-```txt
-input → proses FIFO → output dashboard
-```
-
----
-
-# 11. Definition of Done MVP Frontend
-
-Frontend MVP dianggap selesai jika:
-
-- `/stocks/new` bisa membuat stok masuk.
-- `/stocks` bisa menampilkan stok terurut FIFO.
-- `/stock-outs/new` bisa mencatat ikan keluar dan menampilkan hasil pengurangan batch.
-- `/dashboard` bisa menampilkan summary dan recent movement.
-- Minimal data master `fish-types` dan `cold-storages` bisa dibuat dari UI atau sudah tersedia dari seed/backend.
-- Semua halaman utama nyaman dibuka di layar mobile.
-- Error dari backend bisa ditampilkan ke user.
-- Loading state tersedia pada request utama.
