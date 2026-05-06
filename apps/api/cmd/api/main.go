@@ -12,6 +12,11 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/pisondev/ikant-setop-us/apps/api/internal/config"
 	"github.com/pisondev/ikant-setop-us/apps/api/internal/database"
+	"github.com/pisondev/ikant-setop-us/apps/api/internal/modules/dashboard"
+	"github.com/pisondev/ikant-setop-us/apps/api/internal/modules/fish"
+	"github.com/pisondev/ikant-setop-us/apps/api/internal/modules/stock"
+	"github.com/pisondev/ikant-setop-us/apps/api/internal/modules/stockout"
+	"github.com/pisondev/ikant-setop-us/apps/api/internal/modules/storage"
 	"github.com/pisondev/ikant-setop-us/apps/api/internal/shared"
 )
 
@@ -22,7 +27,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	db, err := database.NewPostgresPool(ctx, cfg.DatabaseURL())
+	db, err := database.NewPool(ctx, cfg.DatabaseURL())
 	if err != nil {
 		log.WithError(err).Fatal("failed to connect database")
 	}
@@ -46,6 +51,31 @@ func main() {
 			"version": cfg.AppVersion,
 		})
 	})
+
+	v1 := app.Group("/api/v1")
+	v1.Get("/health", func(c *fiber.Ctx) error {
+		return shared.Success(c, fiber.StatusOK, "API is running", fiber.Map{
+			"service": cfg.AppName,
+			"version": cfg.AppVersion,
+		})
+	})
+
+	fishRepo := fish.NewRepository(db)
+	fish.NewHandler(fishRepo).RegisterRoutes(v1)
+
+	storageRepo := storage.NewRepository(db)
+	storage.NewHandler(storageRepo).RegisterRoutes(v1)
+
+	stockRepo := stock.NewRepository(db)
+	stockService := stock.NewService(stockRepo)
+	stock.NewHandler(stockRepo, stockService).RegisterRoutes(v1)
+
+	stockoutRepo := stockout.NewRepository(db)
+	stockoutService := stockout.NewService(stockoutRepo)
+	stockout.NewHandler(stockoutRepo, stockoutService).RegisterRoutes(v1)
+
+	dashboardRepo := dashboard.NewRepository(db)
+	dashboard.NewHandler(dashboardRepo).RegisterRoutes(v1)
 
 	app.Use(func(c *fiber.Ctx) error {
 		return shared.Error(c, fiber.StatusNotFound, "Route not found", nil)

@@ -1,0 +1,330 @@
+{
+  "info": {
+    "_postman_id": "7b804f1d-6554-4dc9-83fb-9da586cf4d6a",
+    "name": "Ikan't Setop Us API",
+    "description": "Postman collection for the Ikan't Setop Us MVP API. Import with the local environment and run master data requests before stock and stock-out requests.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/health"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Fish Types",
+      "item": [
+        {
+          "name": "List Fish Types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/fish-types"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Fish Type",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.environment.set('fish_type_id', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tuna\",\n  \"image_url\": \"/images/fish/tuna.png\",\n  \"description\": \"Ikan tuna\"\n}"
+            },
+            "url": "{{base_url}}/fish-types"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cold Storages",
+      "item": [
+        {
+          "name": "List Cold Storages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/cold-storages"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Cold Storage",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.environment.set('cold_storage_id', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cold Storage A\",\n  \"location_label\": \"Zona A - Rak 1\",\n  \"description\": \"Penyimpanan utama untuk ikan kualitas baik\"\n}"
+            },
+            "url": "{{base_url}}/cold-storages"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stocks",
+      "item": [
+        {
+          "name": "Create Stock Batch",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.environment.set('stock_batch_id', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fish_type_id\": \"{{fish_type_id}}\",\n  \"cold_storage_id\": \"{{cold_storage_id}}\",\n  \"quality\": \"baik\",\n  \"initial_weight_kg\": 50,\n  \"entered_at\": \"{{$isoTimestamp}}\",\n  \"notes\": \"Tangkapan pagi\"\n}"
+            },
+            "url": "{{base_url}}/stocks"
+          },
+          "response": []
+        },
+        {
+          "name": "List Stocks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stocks?sort=fifo"
+          },
+          "response": []
+        },
+        {
+          "name": "List Stocks by Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stocks?fish_type_id={{fish_type_id}}&quality={{quality}}&cold_storage_id={{cold_storage_id}}&status={{stock_status}}&sort=fifo"
+          },
+          "response": []
+        },
+        {
+          "name": "List FIFO Stocks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stocks/fifo"
+          },
+          "response": []
+        },
+        {
+          "name": "List FIFO Stocks by Fish Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stocks/fifo?fish_type_id={{fish_type_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "List FIFO Stocks Paginated",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stocks/fifo?fish_type_id={{fish_type_id}}&limit={{limit}}&offset={{offset}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Stock Detail",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stocks/{{stock_batch_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Stock Quality",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quality\": \"sedang\",\n  \"notes\": \"Kualitas mata ikan mulai menurun\"\n}"
+            },
+            "url": "{{base_url}}/stocks/{{stock_batch_id}}/quality"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Stock Location",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cold_storage_id\": \"{{cold_storage_id}}\",\n  \"notes\": \"Dipindahkan ke cold storage pilihan\"\n}"
+            },
+            "url": "{{base_url}}/stocks/{{stock_batch_id}}/location"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stock Outs",
+      "item": [
+        {
+          "name": "Create Stock Out",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.environment.set('stock_out_id', json.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fish_type_id\": \"{{fish_type_id}}\",\n  \"total_weight_kg\": 10,\n  \"destination\": \"Restoran Laut Makassar\",\n  \"out_at\": \"{{$isoTimestamp}}\",\n  \"notes\": \"Pengeluaran untuk pesanan\"\n}"
+            },
+            "url": "{{base_url}}/stock-outs"
+          },
+          "response": []
+        },
+        {
+          "name": "List Stock Outs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stock-outs"
+          },
+          "response": []
+        },
+        {
+          "name": "List Stock Outs by Fish Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stock-outs?fish_type_id={{fish_type_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "List Stock Outs by Date and Destination",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/stock-outs?destination={{destination}}&date_from={{date_from}}&date_to={{date_to}}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Dashboard Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/dashboard/summary"
+          },
+          "response": []
+        },
+        {
+          "name": "Recent Movements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/dashboard/recent-movements?limit=10"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
