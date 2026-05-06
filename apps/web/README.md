@@ -13,8 +13,8 @@ Update terakhir: 2026-05-06.
 [x] Master fish types /fish-types
 [x] Master cold storages /cold-storages
 [x] Stock-in form /stocks/new
+[x] Stock-out form /stock-outs/new
 [ ] Dashboard
-[ ] Stock-out form
 [ ] Stock-out history
 ```
 

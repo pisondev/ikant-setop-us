@@ -17,7 +17,7 @@ Update terakhir: 2026-05-06.
 | Database schema | Selesai | Migration awal tersedia di `apps/api/migrations`. |
 | Backend API | Selesai untuk kontrak MVP | Endpoint sudah dipetakan per modul dan punya unit test. |
 | Postman docs | Selesai | Collection dan environment tersedia di `docs/api`. |
-| Frontend | Sebagian | Foundation, master data, `/`, `/stocks`, dan `/stocks/new` sudah tersedia; stock-out dan dashboard belum. |
+| Frontend | Sebagian | Foundation, master data, stock-in, stock-out form, `/`, dan `/stocks` sudah tersedia; dashboard dan riwayat belum. |
 | Dokumentasi progress | Disinkronkan | Detail status ada di `docs/frontend/frontend-mvp-todo.md` dan `docs/jobdesc_progress.md`. |
 
 ## Fitur MVP

@@ -16,7 +16,7 @@ Update terakhir: 2026-05-06.
 | Dashboard frontend | Farhan | Belum | Route `/dashboard` belum ada. |
 | Master data frontend | Pannayaka | Selesai | Route `/fish-types` dan `/cold-storages` sudah GET/POST API. |
 | Stock-in page | Mikail | Selesai | Route `/stocks/new` sudah GET master data dan POST `/stocks`. |
-| Stock-out page | Mikail | Belum | Route `/stock-outs/new` belum ada. |
+| Stock-out page | Mikail | Selesai | Route `/stock-outs/new` sudah preview FIFO dan POST `/stock-outs`. |
 | Stock-out history | Adit | Belum | Route `/stock-outs` belum ada. |
 | README dan progress docs | Adit + Pison | Sebagian | README sudah disinkronkan, perlu update lagi saat frontend bertambah. |
 | Demo dan QA manual | Adit + Farhan | Belum | Menunggu halaman frontend inti selesai. |
@@ -57,7 +57,7 @@ Update terakhir: 2026-05-06.
 [x] /stocks/new tersedia.
 [x] /stocks tersedia.
 [~] /stocks terhubung ke API tanpa mock, tetapi halaman tujuan tombol belum tersedia.
-[ ] /stock-outs/new tersedia.
+[x] /stock-outs/new tersedia.
 [ ] /stock-outs tersedia.
 ```
 
@@ -91,8 +91,8 @@ Checklist:
 [x] Buat bottom navigation.
 [x] Ubah / dari template Next.js.
 [x] Buat /stocks/new.
-[ ] Buat /stock-outs/new.
-[ ] Pastikan loading/error/success state ada di form input.
+[x] Buat /stock-outs/new.
+[x] Pastikan loading/error/success state ada di form input.
 ```
 
 ### Farhan - FIFO, Dashboard, dan QA Data Flow
@@ -189,10 +189,9 @@ Checklist:
 
 Urutan kerja yang paling aman:
 
-1. Mikail membuat `/stock-outs/new`.
-2. Farhan membuat `/dashboard`.
-3. Adit membuat `/stock-outs`.
-4. Adit dan Farhan menjalankan demo flow dan QA manual.
+1. Farhan membuat `/dashboard`.
+2. Adit membuat `/stock-outs`.
+3. Adit dan Farhan menjalankan demo flow dan QA manual.
 
 ## Demo Flow Target
 
@@ -224,7 +223,7 @@ Urutan kerja yang paling aman:
 [x] /cold-storages bisa menambah cold storage.
 [x] /stocks/new bisa mencatat stok masuk.
 [ ] /stocks bisa menampilkan stok FIFO dari backend tanpa mock.
-[ ] /stock-outs/new bisa mencatat ikan keluar.
+[x] /stock-outs/new bisa mencatat ikan keluar.
 [ ] /stock-outs bisa menampilkan riwayat pengeluaran.
 [ ] Demo flow bisa dijalankan tanpa error fatal.
 [ ] README final sesuai fitur yang benar-benar selesai.

@@ -23,7 +23,8 @@ input stok masuk -> data tersimpan -> stok tampil FIFO -> stok keluar dicatat ->
 | `/stocks` | Sebagian lanjut | Sudah memakai API helper/type bersama dan error state eksplisit. |
 | Master data frontend | Selesai | `/fish-types` dan `/cold-storages` sudah terintegrasi GET/POST API. |
 | Stock-in frontend | Selesai | `/stocks/new` sudah terintegrasi GET master data dan POST `/stocks`. |
-| Halaman frontend lain | Belum | Dashboard, stock-out, dan riwayat belum ada. |
+| Stock-out form frontend | Selesai | `/stock-outs/new` sudah punya FIFO preview dan POST `/stock-outs`. |
+| Halaman frontend lain | Belum | Dashboard dan riwayat belum ada. |
 
 ## API Base URL
 
@@ -49,7 +50,7 @@ docs/api/api-contract-v1.md
 | `/cold-storages` | Medium | Selesai | `GET /cold-storages`, `POST /cold-storages` |
 | `/stocks/new` | High | Selesai | `GET /fish-types`, `GET /cold-storages`, `POST /stocks` |
 | `/stocks` | High | Sebagian | `GET /stocks/fifo`, `GET /fish-types` |
-| `/stock-outs/new` | High | Belum | `GET /fish-types`, `GET /stocks/fifo?fish_type_id={id}`, `POST /stock-outs` |
+| `/stock-outs/new` | High | Selesai | `GET /fish-types`, `GET /stocks/fifo?fish_type_id={id}`, `POST /stock-outs` |
 | `/stock-outs` | Medium | Belum | `GET /stock-outs` |
 
 ## Checklist Foundation
@@ -199,14 +200,14 @@ Yang masih perlu:
 Acceptance criteria:
 
 ```txt
-[ ] Halaman /stock-outs/new tersedia.
-[ ] GET /fish-types terintegrasi.
-[ ] FIFO preview tampil dari GET /stocks/fifo?fish_type_id={id}.
-[ ] POST /stock-outs terintegrasi.
-[ ] User bisa input fish_type_id, total_weight_kg, destination, out_at, notes.
-[ ] Response data.items ditampilkan sebagai summary batch yang dipakai.
-[ ] Error insufficient stock dari backend tampil jelas.
-[ ] Setelah sukses, user bisa menuju /stocks, /dashboard, atau input lagi.
+[x] Halaman /stock-outs/new tersedia.
+[x] GET /fish-types terintegrasi.
+[x] FIFO preview tampil dari GET /stocks/fifo?fish_type_id={id}.
+[x] POST /stock-outs terintegrasi.
+[x] User bisa input fish_type_id, total_weight_kg, destination, out_at, notes.
+[x] Response data.items ditampilkan sebagai summary batch yang dipakai.
+[x] Error insufficient stock dari backend tampil jelas.
+[x] Setelah sukses, user bisa menuju /stocks atau /dashboard.
 ```
 
 ### `/stock-outs`
@@ -269,10 +270,9 @@ export type FIFOStock = {
 
 ## Urutan Kerja Berikutnya
 
-1. Buat `/stock-outs/new`.
-2. Buat `/dashboard`.
-3. Buat `/stock-outs`.
-4. Jalankan demo flow end-to-end.
+1. Buat `/dashboard`.
+2. Buat `/stock-outs`.
+3. Jalankan demo flow end-to-end.
 
 ## Definition of Done Frontend MVP
 
@@ -282,7 +282,7 @@ export type FIFOStock = {
 [x] /cold-storages bisa menambah cold storage.
 [x] /stocks/new bisa mencatat stok masuk.
 [ ] /stocks bisa menampilkan stok FIFO dari backend.
-[ ] /stock-outs/new bisa mencatat pengeluaran dan menampilkan batch yang dipakai.
+[x] /stock-outs/new bisa mencatat pengeluaran dan menampilkan batch yang dipakai.
 [ ] /stock-outs bisa menampilkan riwayat pengeluaran.
 [ ] Error backend bisa dibaca user.
 [ ] Semua halaman utama punya loading state.
