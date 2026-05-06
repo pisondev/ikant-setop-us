@@ -18,7 +18,8 @@ Update terakhir: 2026-05-06.
 | Backend API | Selesai untuk kontrak MVP | Endpoint sudah dipetakan per modul dan punya unit test. |
 | Postman docs | Selesai | Collection dan environment tersedia di `docs/api`. |
 | Frontend | Selesai implementasi MVP | Foundation, dashboard, master data, stock-in, stok FIFO, stock-out form, dan riwayat pengeluaran sudah tersedia; perlu QA manual end-to-end. |
-| Dokumentasi progress | Disinkronkan | Detail status ada di `docs/frontend/frontend-mvp-todo.md` dan `docs/jobdesc_progress.md`. |
+| Demo dan QA | Sebagian | Demo flow API sudah lolos; validasi browser/mobile masih perlu dijalankan. |
+| Dokumentasi progress | Disinkronkan | Detail status ada di `docs/frontend/frontend-mvp-todo.md`, `docs/jobdesc_progress.md`, dan checklist QA. |
 
 ## Fitur MVP
 
@@ -187,6 +188,8 @@ npm run build
 
 - `docs/frontend/frontend-mvp-todo.md` adalah single source of truth status frontend MVP.
 - `docs/jobdesc_progress.md` adalah tracker progress per owner.
+- `docs/demo-script-final.md` adalah script demo final untuk presentasi MVP.
+- `docs/manual-qa-checklist.md` adalah checklist QA browser/mobile.
 - `docs/diagram/diagram.md` adalah sumber diagram sistem.
 - `docs/api/api-contract-v1.md` adalah kontrak API backend.
 

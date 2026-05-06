@@ -19,7 +19,7 @@ Update terakhir: 2026-05-06.
 | Stock-out page | Mikail | Selesai | Route `/stock-outs/new` sudah preview FIFO dan POST `/stock-outs`. |
 | Stock-out history | Adit | Selesai | Route `/stock-outs` sudah GET `/stock-outs`, filter dasar, dan detail batch FIFO. |
 | README dan progress docs | Adit + Pison | Selesai sementara | README dan tracker sudah disinkronkan dengan frontend MVP saat ini. |
-| Demo dan QA manual | Adit + Farhan | Belum | Menunggu halaman frontend inti selesai. |
+| Demo dan QA manual | Adit + Farhan | Sebagian | Demo flow API run 20260506154516 lolos; validasi browser/mobile masih perlu dijalankan. |
 
 ## Progress Teknis Aktual
 
@@ -114,8 +114,8 @@ Checklist:
 [x] Tambahkan error state eksplisit di /stocks.
 [x] Tambahkan tombol navigasi ke input stok dan input keluar.
 [x] Buat /dashboard.
-[~] Validasi angka dashboard setelah stock in/out menunggu QA manual end-to-end.
-[ ] Jalankan skenario FIFO manual dari docs/fifo-test-scenarios.md.
+[x] Validasi angka dashboard setelah stock in/out via API demo run 20260506154516.
+[~] Jalankan skenario FIFO manual dari docs/fifo-test-scenarios.md: flow utama sudah PASS via API, skenario lengkap belum semua dijalankan.
 ```
 
 ### Pannayaka - Master Data dan UX Copy
@@ -157,9 +157,9 @@ Checklist:
 [x] Integrasi GET /stock-outs.
 [x] README disinkronkan dengan kondisi backend/frontend saat ini.
 [x] Update README lagi setelah frontend lengkap.
-[ ] Siapkan demo script final.
-[ ] Siapkan QA checklist final.
-[ ] Catat bug/mismatch sebelum submission.
+[x] Siapkan demo script final.
+[x] Siapkan QA checklist final.
+[~] Catat bug/mismatch sebelum submission: belum ada bug aplikasi dari API demo; validasi browser/mobile pending.
 ```
 
 ### Pison - Backend Lead dan Integrator
@@ -190,7 +190,8 @@ Checklist:
 Urutan kerja yang paling aman:
 
 1. Adit dan Farhan menjalankan demo flow dan QA manual.
-2. Catat bug/mismatch sebelum submission.
+2. Validasi visual mobile lewat browser.
+3. Catat bug/mismatch sebelum submission.
 
 ## Demo Flow Target
 
@@ -224,7 +225,7 @@ Urutan kerja yang paling aman:
 [x] /stocks bisa menampilkan stok FIFO dari backend tanpa mock.
 [x] /stock-outs/new bisa mencatat ikan keluar.
 [x] /stock-outs bisa menampilkan riwayat pengeluaran.
-[ ] Demo flow bisa dijalankan tanpa error fatal.
+[~] Demo flow bisa dijalankan tanpa error fatal: API flow PASS, browser/mobile pending.
 [x] README final sesuai fitur yang benar-benar selesai.
 ```
 
@@ -239,6 +240,18 @@ feat/mikail-core-frontend
 feat/farhan-fifo-dashboard
 feat/pannayaka-master-data
 feat/adit-docs-demo
+```
+
+Sintaks checkout tahap berikutnya:
+
+```bash
+git switch -c feat/adit-docs-demo
+```
+
+Jika branch sudah ada:
+
+```bash
+git switch feat/adit-docs-demo
 ```
 
 Commit convention:

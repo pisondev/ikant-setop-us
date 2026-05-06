@@ -65,7 +65,7 @@ docs/api/api-contract-v1.md
 [x] Buat page header reusable.
 [x] Ubah / dari template Next.js menjadi entry point aplikasi.
 [x] Hapus fallback mock dari /stocks setelah backend siap dipakai di dev.
-[~] Pastikan loading, error, dan empty state punya pola yang konsisten: sudah diterapkan di /stocks, perlu diulang pada halaman baru.
+[x] Pastikan loading, error, dan empty state punya pola yang konsisten di halaman utama.
 ```
 
 ## Checklist Per Halaman
@@ -102,8 +102,8 @@ Acceptance criteria:
 [x] Loading state tersedia.
 [x] Error state tersedia.
 [x] Empty recent movement tetap rapi.
-[~] Angka berubah setelah stok masuk: perlu validasi manual end-to-end dengan backend menyala.
-[~] Angka berubah setelah stok keluar: perlu validasi manual end-to-end dengan backend menyala.
+[x] Angka berubah setelah stok masuk: validasi API demo run 20260506154516.
+[x] Angka berubah setelah stok keluar: validasi API demo run 20260506154516.
 ```
 
 ### `/fish-types`
@@ -271,8 +271,8 @@ export type FIFOStock = {
 
 ## Urutan Kerja Berikutnya
 
-1. Jalankan demo flow end-to-end.
-2. Validasi visual mobile lewat browser.
+1. Validasi visual mobile lewat browser.
+2. Jalankan QA checklist final di `docs/manual-qa-checklist.md`.
 
 ## Definition of Done Frontend MVP
 
