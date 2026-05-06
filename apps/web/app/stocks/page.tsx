@@ -1,283 +1,208 @@
-"use client"
-import { useEffect, useState } from "react"
+"use client";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { ApiError, apiGet } from "@/lib/api";
+import { PageHeader } from "@/components/layout/page-header";
+import type { FIFOStock, FishQuality, FishType } from "@/types/api";
 
-// Tipe data dari API
-type FishType = {
-  id: string
-  name: string
-}
-
-type Stock = {
-  id: string
-  fish_type_name: string
-  quality: string
-  remaining_weight_kg: number
-  entered_at: string
-  cold_storage_name: string
-  location_label: string
-  fifo_rank: number
-}
-
-// Mock data sementara (sebelum API Pison siap)
-const mockFishTypes: FishType[] = [
-  { id: "fish-001", name: "Tuna" },
-  { id: "fish-002", name: "Tongkol" },
-  { id: "fish-003", name: "Cakalang" },
-  { id: "fish-004", name: "Bandeng" },
-  { id: "fish-005", name: "Kerapu" },
-]
-
-const mockStocks: Stock[] = [
-  {
-    id: "stock-001",
-    fish_type_name: "Tuna",
-    quality: "sedang",
-    remaining_weight_kg: 35,
-    entered_at: "2026-05-01T09:15:00Z",
-    cold_storage_name: "Cold Storage B",
-    location_label: "Zona B - Rak 2",
-    fifo_rank: 1,
-  },
-  {
-    id: "stock-002",
-    fish_type_name: "Tuna",
-    quality: "baik",
-    remaining_weight_kg: 100,
-    entered_at: "2026-05-02T07:00:00Z",
-    cold_storage_name: "Cold Storage A",
-    location_label: "Zona A - Rak 1",
-    fifo_rank: 2,
-  },
-  {
-    id: "stock-003",
-    fish_type_name: "Tongkol",
-    quality: "baik",
-    remaining_weight_kg: 60,
-    entered_at: "2026-05-02T08:30:00Z",
-    cold_storage_name: "Cold Storage B",
-    location_label: "Zona B - Rak 2",
-    fifo_rank: 1,
-  },
-  {
-    id: "stock-004",
-    fish_type_name: "Cakalang",
-    quality: "buruk",
-    remaining_weight_kg: 20,
-    entered_at: "2026-05-02T09:00:00Z",
-    cold_storage_name: "Cold Storage C",
-    location_label: "Zona C - Rak 3",
-    fifo_rank: 1,
-  },
-]
-
-// Fungsi bantu: format tanggal jadi lebih mudah dibaca
-function formatTanggal(isoString: string): string {
-  const date = new Date(isoString)
-  return date.toLocaleString("id-ID", {
+function formatDate(value: string): string {
+  return new Date(value).toLocaleString("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  })
+  });
 }
 
-// Fungsi bantu: warna badge kualitas
-function warnaBadgeKualitas(quality: string): string {
-  if (quality === "baik") return "background:#d1fae5;color:#065f46"
-  if (quality === "sedang") return "background:#fef9c3;color:#854d0e"
-  return "background:#fee2e2;color:#991b1b"
+function qualityClass(quality: FishQuality): string {
+  if (quality === "baik") return "bg-emerald-100 text-emerald-800";
+  if (quality === "sedang") return "bg-amber-100 text-amber-800";
+  return "bg-rose-100 text-rose-800";
+}
+
+function errorMessage(error: unknown): string {
+  if (error instanceof ApiError) return error.message;
+  if (error instanceof Error) return error.message;
+  return "Gagal memuat data.";
 }
 
 export default function StocksPage() {
-  const [stocks, setStocks] = useState<Stock[]>([])
-  const [fishTypes, setFishTypes] = useState<FishType[]>([])
-  const [selectedFishType, setSelectedFishType] = useState("")
-  const [loading, setLoading] = useState(true)
-  const [useMock, setUseMock] = useState(false)
+  const [stocks, setStocks] = useState<FIFOStock[]>([]);
+  const [fishTypes, setFishTypes] = useState<FishType[]>([]);
+  const [selectedFishType, setSelectedFishType] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Ambil jenis ikan untuk dropdown
   useEffect(() => {
-    fetch(`${API_BASE}/fish-types`)
-      .then((res) => res.json())
-      .then((json) => setFishTypes(json.data))
-      .catch(() => {
-        // API belum siap, pakai mock data
-        setFishTypes(mockFishTypes)
-        setUseMock(true)
-      })
-  }, [])
+    let ignore = false;
 
-  // Ambil data FIFO, diulang kalau filter berubah
-  useEffect(() => {
-    setLoading(true)
-
-    if (useMock) {
-      // Pakai mock data, filter manual
-      const filtered = selectedFishType
-        ? mockStocks.filter((s) => {
-            const fish = mockFishTypes.find((f) => f.id === selectedFishType)
-            return fish ? s.fish_type_name === fish.name : true
-          })
-        : mockStocks
-      setStocks(filtered)
-      setLoading(false)
-      return
+    async function loadFishTypes() {
+      try {
+        const data = await apiGet<FishType[]>("/fish-types");
+        if (!ignore) setFishTypes(data);
+      } catch (err) {
+        if (!ignore) setError(errorMessage(err));
+      }
     }
 
-    const url = selectedFishType
-      ? `${API_BASE}/stocks/fifo?fish_type_id=${selectedFishType}`
-      : `${API_BASE}/stocks/fifo`
+    loadFishTypes();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((json) => {
-        setStocks(json.data)
-        setLoading(false)
-      })
-      .catch(() => {
-        // Fallback ke mock kalau API error
-        setStocks(mockStocks)
-        setLoading(false)
-        setUseMock(true)
-      })
-  }, [selectedFishType, useMock])
+  useEffect(() => {
+    let ignore = false;
+
+    async function loadStocks() {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const path = selectedFishType
+          ? `/stocks/fifo?fish_type_id=${selectedFishType}`
+          : "/stocks/fifo";
+        const data = await apiGet<FIFOStock[]>(path);
+        if (!ignore) setStocks(data);
+      } catch (err) {
+        if (!ignore) {
+          setStocks([]);
+          setError(errorMessage(err));
+        }
+      } finally {
+        if (!ignore) setLoading(false);
+      }
+    }
+
+    loadStocks();
+    return () => {
+      ignore = true;
+    };
+  }, [selectedFishType]);
 
   return (
-    <div style={{ maxWidth: 480, margin: "0 auto", padding: "16px" }}>
+    <div className="flex flex-1 flex-col">
+      <PageHeader
+        title="Daftar Stok FIFO"
+        description="Batch paling lama masuk tampil sebagai prioritas."
+        actions={
+          <Link
+            href="/stocks/new"
+            className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white"
+          >
+            Tambah
+          </Link>
+        }
+      />
 
-      {/* Header */}
-      <div style={{ marginBottom: 16 }}>
-        <h1 style={{ fontSize: 20, fontWeight: "bold", margin: 0 }}>
-          Daftar Stok Ikan
-        </h1>
-        <p style={{ fontSize: 13, color: "#6b7280", margin: "4px 0 0" }}>
-          Diurutkan berdasarkan FIFO (masuk paling lama menjadi prioritas pertama)
-        </p>
-        {useMock && (
-          <p style={{ fontSize: 12, color: "#b45309", marginTop: 4 }}>
-            Menggunakan data simulasi (API belum tersambung)
-          </p>
-        )}
-      </div>
-
-      {/* Filter jenis ikan */}
-      <div style={{ marginBottom: 16 }}>
+      <div className="mb-4 grid gap-3">
         <select
           value={selectedFishType}
-          onChange={(e) => setSelectedFishType(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "10px 12px",
-            borderRadius: 8,
-            border: "1px solid #d1d5db",
-            fontSize: 14,
-          }}
+          onChange={(event) => setSelectedFishType(event.target.value)}
+          className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 outline-none focus:border-emerald-600"
         >
-          <option value="">Semua Jenis Ikan</option>
-          {fishTypes.map((f) => (
-            <option key={f.id} value={f.id}>
-              {f.name}
+          <option value="">Semua jenis ikan</option>
+          {fishTypes.map((fishType) => (
+            <option key={fishType.id} value={fishType.id}>
+              {fishType.name}
             </option>
           ))}
         </select>
+
+        <div className="grid grid-cols-2 gap-2">
+          <Link
+            href="/stocks/new"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-center text-sm font-semibold text-slate-800"
+          >
+            Stok Masuk
+          </Link>
+          <Link
+            href="/stock-outs/new"
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-center text-sm font-semibold text-slate-800"
+          >
+            Ikan Keluar
+          </Link>
+        </div>
       </div>
 
-      {/* Loading state */}
-      {loading && (
-        <p style={{ textAlign: "center", color: "#6b7280" }}>
-          Memuat data stok...
-        </p>
-      )}
+      {error ? (
+        <div className="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+          {error}
+        </div>
+      ) : null}
 
-      {/* Empty state */}
-      {!loading && stocks.length === 0 && (
-        <div style={{ textAlign: "center", padding: "40px 0", color: "#6b7280" }}>
-          <p style={{ fontSize: 32 }}>🐟</p>
-          <p style={{ fontWeight: "bold" }}>Tidak ada stok tersedia</p>
-          <p style={{ fontSize: 13 }}>
-            Belum ada ikan yang masuk untuk jenis ini
+      {loading ? (
+        <div className="rounded-lg border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-600">
+          Memuat data stok...
+        </div>
+      ) : null}
+
+      {!loading && stocks.length === 0 && !error ? (
+        <div className="rounded-lg border border-slate-200 bg-white px-4 py-8 text-center">
+          <p className="text-sm font-semibold text-slate-900">
+            Tidak ada stok tersedia
+          </p>
+          <p className="mt-1 text-sm text-slate-600">
+            Belum ada batch available untuk filter ini.
           </p>
         </div>
-      )}
+      ) : null}
 
-      {/* Daftar stok */}
-      {!loading &&
-        stocks.map((stok) => (
-          <div
-            key={stok.id}
-            style={{
-              border: "1px solid #e5e7eb",
-              borderRadius: 12,
-              padding: 16,
-              marginBottom: 12,
-              background: "#fff",
-            }}
-          >
-            {/* Baris atas: ranking + nama ikan + badge kualitas */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <span
-                style={{
-                  background: "#1e40af",
-                  color: "#fff",
-                  borderRadius: 999,
-                  width: 28,
-                  height: 28,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 13,
-                  fontWeight: "bold",
-                  flexShrink: 0,
-                }}
-              >
-                {stok.fifo_rank}
-              </span>
-              <span style={{ fontWeight: "bold", fontSize: 16, flex: 1 }}>
-                {stok.fish_type_name}
-              </span>
-              <span
-                style={{
-                  ...Object.fromEntries(
-                    warnaBadgeKualitas(stok.quality)
-                      .split(";")
-                      .map((s) => s.split(":"))
-                  ),
-                  padding: "2px 10px",
-                  borderRadius: 999,
-                  fontSize: 12,
-                  fontWeight: 600,
-                }}
-              >
-                {stok.quality}
-              </span>
-            </div>
-
-            {/* Detail stok */}
-            <div style={{ fontSize: 13, color: "#374151", display: "flex", flexDirection: "column", gap: 4 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280" }}>Sisa Berat</span>
-                <span style={{ fontWeight: "bold" }}>
-                  {stok.remaining_weight_kg} kg
+      {!loading && stocks.length > 0 ? (
+        <div className="grid gap-3">
+          {stocks.map((stock) => (
+            <article
+              key={stock.id}
+              className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
+            >
+              <div className="mb-3 flex items-center gap-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-700 text-sm font-semibold text-white">
+                  {stock.fifo_rank}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h2 className="truncate text-base font-semibold text-slate-950">
+                    {stock.fish_type_name}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    {formatDate(stock.entered_at)}
+                  </p>
+                </div>
+                <span
+                  className={[
+                    "rounded-full px-2.5 py-1 text-xs font-semibold",
+                    qualityClass(stock.quality),
+                  ].join(" ")}
+                >
+                  {stock.quality}
                 </span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280" }}>Waktu Masuk</span>
-                <span>{formatTanggal(stok.entered_at)}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280" }}>Lokasi</span>
-                <span>{stok.cold_storage_name}</span>
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ color: "#6b7280" }}>Zona</span>
-                <span>{stok.location_label}</span>
-              </div>
-            </div>
-          </div>
-        ))}
+
+              <dl className="grid gap-2 text-sm">
+                <div className="flex justify-between gap-3">
+                  <dt className="text-slate-500">Sisa berat</dt>
+                  <dd className="font-semibold text-slate-950">
+                    {stock.remaining_weight_kg} kg
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-slate-500">Cold storage</dt>
+                  <dd className="text-right font-medium text-slate-800">
+                    {stock.cold_storage_name}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-3">
+                  <dt className="text-slate-500">Lokasi</dt>
+                  <dd className="text-right text-slate-800">
+                    {stock.location_label ?? "-"}
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      ) : null}
     </div>
-  )
+  );
 }

@@ -10,8 +10,9 @@ Update terakhir: 2026-05-06.
 |---|---|---|---|
 | Backend API dan database | Pison | Selesai MVP | Endpoint kontrak API sudah tersedia dan dites. |
 | API contract dan Postman | Pison | Selesai | Ada di `docs/api`. |
-| Frontend foundation | Mikail | Belum | API helper, types, layout, bottom nav belum ada. |
-| `/stocks` FIFO list | Farhan | Sebagian | Halaman ada, fetch API ada, masih fallback mock dan belum memakai helper/type bersama. |
+| Frontend foundation | Mikail | Selesai tahap 1 | API helper, types, app shell, bottom nav, dan page header tersedia. |
+| `/` entry page | Mikail | Selesai sementara | Template Next.js sudah diganti menjadi entry point aplikasi. |
+| `/stocks` FIFO list | Farhan | Sebagian lanjut | Sudah memakai API helper/type bersama, error state eksplisit, dan tanpa mock fallback. |
 | Dashboard frontend | Farhan | Belum | Route `/dashboard` belum ada. |
 | Master data frontend | Pannayaka | Belum | Route `/fish-types` dan `/cold-storages` belum ada. |
 | Stock-in page | Mikail | Belum | Route `/stocks/new` belum ada. |
@@ -44,18 +45,18 @@ Update terakhir: 2026-05-06.
 ### Frontend
 
 ```txt
-[ ] Frontend foundation selesai.
-[ ] API helper tersedia.
-[ ] TypeScript types API tersedia.
-[ ] Mobile app shell tersedia.
-[ ] Bottom navigation tersedia.
-[ ] / tidak lagi memakai template Next.js.
+[x] Frontend foundation tahap 1 selesai.
+[x] API helper tersedia.
+[x] TypeScript types API tersedia.
+[x] Mobile app shell tersedia.
+[x] Bottom navigation tersedia.
+[x] / tidak lagi memakai template Next.js.
 [ ] /dashboard tersedia.
 [ ] /fish-types tersedia.
 [ ] /cold-storages tersedia.
 [ ] /stocks/new tersedia.
 [x] /stocks tersedia.
-[~] /stocks terhubung ke API tetapi masih punya fallback mock.
+[~] /stocks terhubung ke API tanpa mock, tetapi halaman tujuan tombol belum tersedia.
 [ ] /stock-outs/new tersedia.
 [ ] /stock-outs tersedia.
 ```
@@ -84,11 +85,11 @@ Fokus:
 Checklist:
 
 ```txt
-[ ] Buat API helper.
-[ ] Buat type API bersama.
-[ ] Buat layout mobile-first.
-[ ] Buat bottom navigation.
-[ ] Ubah / dari template Next.js.
+[x] Buat API helper.
+[x] Buat type API bersama.
+[x] Buat layout mobile-first.
+[x] Buat bottom navigation.
+[x] Ubah / dari template Next.js.
 [ ] Buat /stocks/new.
 [ ] Buat /stock-outs/new.
 [ ] Pastikan loading/error/success state ada di form input.
@@ -109,9 +110,9 @@ Checklist:
 [x] Buat halaman awal /stocks.
 [x] Integrasi awal GET /stocks/fifo.
 [x] Integrasi awal GET /fish-types.
-[ ] Rapikan /stocks memakai API helper dan shared types.
-[ ] Tambahkan error state eksplisit di /stocks.
-[ ] Tambahkan tombol navigasi ke input stok dan input keluar.
+[x] Rapikan /stocks memakai API helper dan shared types.
+[x] Tambahkan error state eksplisit di /stocks.
+[x] Tambahkan tombol navigasi ke input stok dan input keluar.
 [ ] Buat /dashboard.
 [ ] Validasi angka dashboard setelah stock in/out.
 [ ] Jalankan skenario FIFO manual dari docs/fifo-test-scenarios.md.
@@ -188,14 +189,12 @@ Checklist:
 
 Urutan kerja yang paling aman:
 
-1. Mikail menyelesaikan frontend foundation.
-2. Farhan merapikan `/stocks` agar tidak bergantung pada mock.
-3. Pannayaka membuat `/fish-types` dan `/cold-storages`.
-4. Mikail membuat `/stocks/new`.
-5. Mikail membuat `/stock-outs/new`.
-6. Farhan membuat `/dashboard`.
-7. Adit membuat `/stock-outs`.
-8. Adit dan Farhan menjalankan demo flow dan QA manual.
+1. Pannayaka membuat `/fish-types` dan `/cold-storages`.
+2. Mikail membuat `/stocks/new`.
+3. Mikail membuat `/stock-outs/new`.
+4. Farhan membuat `/dashboard`.
+5. Adit membuat `/stock-outs`.
+6. Adit dan Farhan menjalankan demo flow dan QA manual.
 
 ## Demo Flow Target
 

@@ -18,9 +18,9 @@ input stok masuk -> data tersimpan -> stok tampil FIFO -> stok keluar dicatat ->
 |---|---|---|
 | Backend API | Selesai | Semua endpoint MVP tersedia di `/api/v1` dan sudah dites. |
 | API docs | Selesai | Contract, Postman collection, dan environment ada di `docs/api`. |
-| Frontend foundation | Belum | Belum ada `src/lib/api.ts`, `src/types/api.ts`, app shell, atau bottom nav. |
-| `/` | Belum | Masih template default Next.js. |
-| `/stocks` | Sebagian | Ada halaman FIFO list, sudah fetch API dan fallback mock, tetapi belum memakai helper/type bersama. |
+| Frontend foundation | Selesai tahap 1 | API helper, shared types, app shell, bottom nav, dan page header sudah ada. |
+| `/` | Selesai sementara | Template Next.js sudah diganti menjadi entry point aplikasi ke route yang tersedia. |
+| `/stocks` | Sebagian lanjut | Sudah memakai API helper/type bersama dan error state eksplisit; halaman input yang ditautkan belum ada. |
 | Halaman frontend lain | Belum | Dashboard, master data, stock-in, stock-out, dan riwayat belum ada. |
 
 ## API Base URL
@@ -41,7 +41,7 @@ docs/api/api-contract-v1.md
 
 | Route | Prioritas | Status | API |
 |---|---:|---|---|
-| `/` | High | Belum | Tidak ada |
+| `/` | High | Selesai sementara | Tidak ada |
 | `/dashboard` | High | Belum | `GET /dashboard/summary`, `GET /dashboard/recent-movements` |
 | `/fish-types` | Medium | Belum | `GET /fish-types`, `POST /fish-types` |
 | `/cold-storages` | Medium | Belum | `GET /cold-storages`, `POST /cold-storages` |
@@ -53,15 +53,15 @@ docs/api/api-contract-v1.md
 ## Checklist Foundation
 
 ```txt
-[ ] Buat API helper di apps/web/src/lib/api.ts atau apps/web/lib/api.ts.
-[ ] Buat TypeScript type API bersama.
-[ ] Setup NEXT_PUBLIC_API_BASE_URL di apps/web/.env.local.
-[ ] Buat layout mobile-first reusable.
-[ ] Buat bottom navigation.
-[ ] Buat page header reusable.
-[ ] Ubah / dari template Next.js menjadi redirect/link ke dashboard.
-[ ] Hapus fallback mock dari /stocks setelah backend siap dipakai di dev.
-[ ] Pastikan loading, error, dan empty state punya pola yang konsisten.
+[x] Buat API helper di apps/web/lib/api.ts.
+[x] Buat TypeScript type API bersama di apps/web/types/api.ts.
+[~] Setup NEXT_PUBLIC_API_BASE_URL: helper punya default lokal, .env.local tetap disarankan untuk dev.
+[x] Buat layout mobile-first reusable.
+[x] Buat bottom navigation.
+[x] Buat page header reusable.
+[x] Ubah / dari template Next.js menjadi entry point aplikasi.
+[x] Hapus fallback mock dari /stocks setelah backend siap dipakai di dev.
+[~] Pastikan loading, error, dan empty state punya pola yang konsisten: sudah diterapkan di /stocks, perlu diulang pada halaman baru.
 ```
 
 ## Checklist Per Halaman
@@ -71,8 +71,8 @@ docs/api/api-contract-v1.md
 Acceptance criteria:
 
 ```txt
-[ ] User membuka / dan langsung diarahkan ke /dashboard atau melihat tombol masuk dashboard.
-[ ] Tidak ada konten template Next.js tersisa.
+[x] User membuka / dan melihat entry point aplikasi.
+[x] Tidak ada konten template Next.js tersisa.
 ```
 
 ### `/dashboard`
@@ -176,19 +176,20 @@ Yang sudah ada:
 [x] Filter jenis ikan memanggil /stocks/fifo?fish_type_id={id}.
 [x] Loading state tersedia.
 [x] Empty state tersedia.
-[x] Fallback mock tersedia ketika API gagal.
+[x] Error state tampil ketika API gagal.
 ```
 
 Yang masih perlu:
 
 ```txt
-[ ] Gunakan API helper bersama.
-[ ] Gunakan TypeScript type bersama.
-[ ] Perbaiki tulisan/karakter rusak pada empty state.
-[ ] Tambahkan error state eksplisit, bukan langsung fallback diam-diam.
-[ ] Tambahkan tombol menuju /stocks/new dan /stock-outs/new.
-[ ] Validasi tampilan mobile setelah layout global tersedia.
-[ ] Hapus mock fallback ketika backend menjadi dependency wajib.
+[x] Gunakan API helper bersama.
+[x] Gunakan TypeScript type bersama.
+[x] Perbaiki tulisan/karakter rusak pada empty state.
+[x] Tambahkan error state eksplisit, bukan langsung fallback diam-diam.
+[x] Tambahkan tombol menuju /stocks/new dan /stock-outs/new.
+[x] Validasi build setelah layout global tersedia.
+[x] Hapus mock fallback ketika backend menjadi dependency wajib.
+[ ] Validasi visual mobile lewat browser setelah halaman lain tersedia.
 ```
 
 ### `/stock-outs/new`
@@ -266,15 +267,12 @@ export type FIFOStock = {
 
 ## Urutan Kerja Berikutnya
 
-1. Selesaikan frontend foundation: API helper, type bersama, layout mobile.
-2. Ganti `/` dari template Next.js.
-3. Rapikan `/stocks` agar memakai helper/type dan error state yang jelas.
-4. Buat `/fish-types` dan `/cold-storages` supaya data master bisa dibuat dari UI.
-5. Buat `/stocks/new`.
-6. Buat `/stock-outs/new`.
-7. Buat `/dashboard`.
-8. Buat `/stock-outs`.
-9. Jalankan demo flow end-to-end.
+1. Buat `/fish-types` dan `/cold-storages` supaya data master bisa dibuat dari UI.
+2. Buat `/stocks/new`.
+3. Buat `/stock-outs/new`.
+4. Buat `/dashboard`.
+5. Buat `/stock-outs`.
+6. Jalankan demo flow end-to-end.
 
 ## Definition of Done Frontend MVP
 

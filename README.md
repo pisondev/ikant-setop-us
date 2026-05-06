@@ -17,7 +17,7 @@ Update terakhir: 2026-05-06.
 | Database schema | Selesai | Migration awal tersedia di `apps/api/migrations`. |
 | Backend API | Selesai untuk kontrak MVP | Endpoint sudah dipetakan per modul dan punya unit test. |
 | Postman docs | Selesai | Collection dan environment tersedia di `docs/api`. |
-| Frontend | Sebagian | Baru route `/stocks` yang ada; masih ada fallback mock data. |
+| Frontend | Sebagian | Foundation selesai, `/` sudah menjadi entry app, `/stocks` sudah terhubung ke helper API tanpa mock. |
 | Dokumentasi progress | Disinkronkan | Detail status ada di `docs/frontend/frontend-mvp-todo.md` dan `docs/jobdesc_progress.md`. |
 
 ## Fitur MVP
@@ -47,6 +47,9 @@ apps/
     migrations/                SQL migration
   web/
     app/                       Next.js app router
+    components/layout/          App shell, bottom nav, page header
+    lib/                        API helper
+    types/                      Shared API types
 docs/
   api/                         API contract, Postman collection, environment
   diagram/                     Diagram sistem dan DBML
