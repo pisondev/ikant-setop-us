@@ -21,7 +21,8 @@ input stok masuk -> data tersimpan -> stok tampil FIFO -> stok keluar dicatat ->
 | Frontend foundation | Selesai tahap 1 | API helper, shared types, app shell, bottom nav, dan page header sudah ada. |
 | `/` | Selesai sementara | Template Next.js sudah diganti menjadi entry point aplikasi ke route yang tersedia. |
 | `/stocks` | Sebagian lanjut | Sudah memakai API helper/type bersama dan error state eksplisit; halaman input yang ditautkan belum ada. |
-| Halaman frontend lain | Belum | Dashboard, master data, stock-in, stock-out, dan riwayat belum ada. |
+| Master data frontend | Selesai | `/fish-types` dan `/cold-storages` sudah terintegrasi GET/POST API. |
+| Halaman frontend lain | Belum | Dashboard, stock-in, stock-out, dan riwayat belum ada. |
 
 ## API Base URL
 
@@ -43,8 +44,8 @@ docs/api/api-contract-v1.md
 |---|---:|---|---|
 | `/` | High | Selesai sementara | Tidak ada |
 | `/dashboard` | High | Belum | `GET /dashboard/summary`, `GET /dashboard/recent-movements` |
-| `/fish-types` | Medium | Belum | `GET /fish-types`, `POST /fish-types` |
-| `/cold-storages` | Medium | Belum | `GET /cold-storages`, `POST /cold-storages` |
+| `/fish-types` | Medium | Selesai | `GET /fish-types`, `POST /fish-types` |
+| `/cold-storages` | Medium | Selesai | `GET /cold-storages`, `POST /cold-storages` |
 | `/stocks/new` | High | Belum | `GET /fish-types`, `GET /cold-storages`, `POST /stocks` |
 | `/stocks` | High | Sebagian | `GET /stocks/fifo`, `GET /fish-types` |
 | `/stock-outs/new` | High | Belum | `GET /fish-types`, `GET /stocks/fifo?fish_type_id={id}`, `POST /stock-outs` |
@@ -107,14 +108,14 @@ Acceptance criteria:
 Acceptance criteria:
 
 ```txt
-[ ] Halaman /fish-types tersedia.
-[ ] GET /fish-types terintegrasi.
-[ ] POST /fish-types terintegrasi.
-[ ] Form field name, image_url, description tersedia.
-[ ] Data baru muncul setelah submit.
-[ ] Loading state tersedia.
-[ ] Error state tersedia.
-[ ] Empty state tersedia.
+[x] Halaman /fish-types tersedia.
+[x] GET /fish-types terintegrasi.
+[x] POST /fish-types terintegrasi.
+[x] Form field name, image_url, description tersedia.
+[x] Data baru muncul setelah submit.
+[x] Loading state tersedia.
+[x] Error state tersedia.
+[x] Empty state tersedia.
 ```
 
 ### `/cold-storages`
@@ -122,14 +123,14 @@ Acceptance criteria:
 Acceptance criteria:
 
 ```txt
-[ ] Halaman /cold-storages tersedia.
-[ ] GET /cold-storages terintegrasi.
-[ ] POST /cold-storages terintegrasi.
-[ ] Form field name, location_label, description tersedia.
-[ ] Data baru muncul setelah submit.
-[ ] Loading state tersedia.
-[ ] Error state tersedia.
-[ ] Empty state tersedia.
+[x] Halaman /cold-storages tersedia.
+[x] GET /cold-storages terintegrasi.
+[x] POST /cold-storages terintegrasi.
+[x] Form field name, location_label, description tersedia.
+[x] Data baru muncul setelah submit.
+[x] Loading state tersedia.
+[x] Error state tersedia.
+[x] Empty state tersedia.
 ```
 
 ### `/stocks/new`
@@ -267,19 +268,18 @@ export type FIFOStock = {
 
 ## Urutan Kerja Berikutnya
 
-1. Buat `/fish-types` dan `/cold-storages` supaya data master bisa dibuat dari UI.
-2. Buat `/stocks/new`.
-3. Buat `/stock-outs/new`.
-4. Buat `/dashboard`.
-5. Buat `/stock-outs`.
-6. Jalankan demo flow end-to-end.
+1. Buat `/stocks/new`.
+2. Buat `/stock-outs/new`.
+3. Buat `/dashboard`.
+4. Buat `/stock-outs`.
+5. Jalankan demo flow end-to-end.
 
 ## Definition of Done Frontend MVP
 
 ```txt
 [ ] /dashboard bisa menampilkan summary dan recent movement dari backend.
-[ ] /fish-types bisa menambah jenis ikan.
-[ ] /cold-storages bisa menambah cold storage.
+[x] /fish-types bisa menambah jenis ikan.
+[x] /cold-storages bisa menambah cold storage.
 [ ] /stocks/new bisa mencatat stok masuk.
 [ ] /stocks bisa menampilkan stok FIFO dari backend.
 [ ] /stock-outs/new bisa mencatat pengeluaran dan menampilkan batch yang dipakai.

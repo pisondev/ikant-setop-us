@@ -14,7 +14,7 @@ Update terakhir: 2026-05-06.
 | `/` entry page | Mikail | Selesai sementara | Template Next.js sudah diganti menjadi entry point aplikasi. |
 | `/stocks` FIFO list | Farhan | Sebagian lanjut | Sudah memakai API helper/type bersama, error state eksplisit, dan tanpa mock fallback. |
 | Dashboard frontend | Farhan | Belum | Route `/dashboard` belum ada. |
-| Master data frontend | Pannayaka | Belum | Route `/fish-types` dan `/cold-storages` belum ada. |
+| Master data frontend | Pannayaka | Selesai | Route `/fish-types` dan `/cold-storages` sudah GET/POST API. |
 | Stock-in page | Mikail | Belum | Route `/stocks/new` belum ada. |
 | Stock-out page | Mikail | Belum | Route `/stock-outs/new` belum ada. |
 | Stock-out history | Adit | Belum | Route `/stock-outs` belum ada. |
@@ -52,8 +52,8 @@ Update terakhir: 2026-05-06.
 [x] Bottom navigation tersedia.
 [x] / tidak lagi memakai template Next.js.
 [ ] /dashboard tersedia.
-[ ] /fish-types tersedia.
-[ ] /cold-storages tersedia.
+[x] /fish-types tersedia.
+[x] /cold-storages tersedia.
 [ ] /stocks/new tersedia.
 [x] /stocks tersedia.
 [~] /stocks terhubung ke API tanpa mock, tetapi halaman tujuan tombol belum tersedia.
@@ -130,14 +130,14 @@ Fokus:
 Checklist:
 
 ```txt
-[ ] Buat /fish-types.
-[ ] Integrasi GET /fish-types.
-[ ] Integrasi POST /fish-types.
-[ ] Buat /cold-storages.
-[ ] Integrasi GET /cold-storages.
-[ ] Integrasi POST /cold-storages.
-[ ] Review wording halaman stok dan pengeluaran.
-[ ] Review empty state agar jelas untuk user lapangan.
+[x] Buat /fish-types.
+[x] Integrasi GET /fish-types.
+[x] Integrasi POST /fish-types.
+[x] Buat /cold-storages.
+[x] Integrasi GET /cold-storages.
+[x] Integrasi POST /cold-storages.
+[x] Review wording halaman master data.
+[x] Review empty state halaman master data agar jelas untuk user lapangan.
 ```
 
 ### Adit - Dokumentasi, Demo Flow, QA Manual
@@ -189,12 +189,11 @@ Checklist:
 
 Urutan kerja yang paling aman:
 
-1. Pannayaka membuat `/fish-types` dan `/cold-storages`.
-2. Mikail membuat `/stocks/new`.
-3. Mikail membuat `/stock-outs/new`.
-4. Farhan membuat `/dashboard`.
-5. Adit membuat `/stock-outs`.
-6. Adit dan Farhan menjalankan demo flow dan QA manual.
+1. Mikail membuat `/stocks/new`.
+2. Mikail membuat `/stock-outs/new`.
+3. Farhan membuat `/dashboard`.
+4. Adit membuat `/stock-outs`.
+5. Adit dan Farhan menjalankan demo flow dan QA manual.
 
 ## Demo Flow Target
 
@@ -222,8 +221,8 @@ Urutan kerja yang paling aman:
 [x] Postman collection dan environment tersedia.
 [ ] Frontend Next.js menyala dengan halaman MVP lengkap.
 [ ] /dashboard bisa menampilkan summary dan recent movement.
-[ ] /fish-types bisa menambah jenis ikan.
-[ ] /cold-storages bisa menambah cold storage.
+[x] /fish-types bisa menambah jenis ikan.
+[x] /cold-storages bisa menambah cold storage.
 [ ] /stocks/new bisa mencatat stok masuk.
 [ ] /stocks bisa menampilkan stok FIFO dari backend tanpa mock.
 [ ] /stock-outs/new bisa mencatat ikan keluar.

@@ -28,6 +28,20 @@ export default function Home() {
         >
           Catat Ikan Keluar
         </Link>
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            href="/fish-types"
+            className="rounded-lg border border-slate-300 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800"
+          >
+            Jenis Ikan
+          </Link>
+          <Link
+            href="/cold-storages"
+            className="rounded-lg border border-slate-300 bg-white px-4 py-3 text-center text-sm font-semibold text-slate-800"
+          >
+            Storage
+          </Link>
+        </div>
       </section>
     </div>
   );

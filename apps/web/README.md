@@ -10,9 +10,9 @@ Update terakhir: 2026-05-06.
 [x] Frontend foundation tahap 1
 [x] Entry page /
 [x] FIFO stock list /stocks
+[x] Master fish types /fish-types
+[x] Master cold storages /cold-storages
 [ ] Dashboard
-[ ] Master fish types
-[ ] Master cold storages
 [ ] Stock-in form
 [ ] Stock-out form
 [ ] Stock-out history

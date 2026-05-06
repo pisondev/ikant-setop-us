@@ -4,11 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/stocks", label: "Stok" },
-  { href: "/stocks/new", label: "Masuk" },
-  { href: "/stock-outs/new", label: "Keluar" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/fish-types", label: "Master" },
+  { href: "/stocks", label: "Stok", active: ["/stocks"] },
+  { href: "/stocks/new", label: "Masuk", active: ["/stocks/new"] },
+  { href: "/stock-outs/new", label: "Keluar", active: ["/stock-outs/new"] },
+  { href: "/dashboard", label: "Dashboard", active: ["/dashboard"] },
+  {
+    href: "/fish-types",
+    label: "Master",
+    active: ["/fish-types", "/cold-storages"],
+  },
 ];
 
 export function BottomNav() {
@@ -18,9 +22,10 @@ export function BottomNav() {
     <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 shadow-sm backdrop-blur">
       <div className="mx-auto grid h-16 max-w-lg grid-cols-5 px-2">
         {navItems.map((item) => {
-          const isActive =
-            pathname === item.href ||
-            (item.href !== "/stocks" && pathname.startsWith(item.href));
+          const isActive = item.active.some(
+            (activePath) =>
+              pathname === activePath || pathname.startsWith(`${activePath}/`),
+          );
 
           return (
             <Link
