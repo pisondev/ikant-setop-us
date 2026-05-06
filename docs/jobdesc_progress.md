@@ -15,7 +15,7 @@ Update terakhir: 2026-05-06.
 | `/stocks` FIFO list | Farhan | Sebagian lanjut | Sudah memakai API helper/type bersama, error state eksplisit, dan tanpa mock fallback. |
 | Dashboard frontend | Farhan | Belum | Route `/dashboard` belum ada. |
 | Master data frontend | Pannayaka | Selesai | Route `/fish-types` dan `/cold-storages` sudah GET/POST API. |
-| Stock-in page | Mikail | Belum | Route `/stocks/new` belum ada. |
+| Stock-in page | Mikail | Selesai | Route `/stocks/new` sudah GET master data dan POST `/stocks`. |
 | Stock-out page | Mikail | Belum | Route `/stock-outs/new` belum ada. |
 | Stock-out history | Adit | Belum | Route `/stock-outs` belum ada. |
 | README dan progress docs | Adit + Pison | Sebagian | README sudah disinkronkan, perlu update lagi saat frontend bertambah. |
@@ -54,7 +54,7 @@ Update terakhir: 2026-05-06.
 [ ] /dashboard tersedia.
 [x] /fish-types tersedia.
 [x] /cold-storages tersedia.
-[ ] /stocks/new tersedia.
+[x] /stocks/new tersedia.
 [x] /stocks tersedia.
 [~] /stocks terhubung ke API tanpa mock, tetapi halaman tujuan tombol belum tersedia.
 [ ] /stock-outs/new tersedia.
@@ -90,7 +90,7 @@ Checklist:
 [x] Buat layout mobile-first.
 [x] Buat bottom navigation.
 [x] Ubah / dari template Next.js.
-[ ] Buat /stocks/new.
+[x] Buat /stocks/new.
 [ ] Buat /stock-outs/new.
 [ ] Pastikan loading/error/success state ada di form input.
 ```
@@ -189,11 +189,10 @@ Checklist:
 
 Urutan kerja yang paling aman:
 
-1. Mikail membuat `/stocks/new`.
-2. Mikail membuat `/stock-outs/new`.
-3. Farhan membuat `/dashboard`.
-4. Adit membuat `/stock-outs`.
-5. Adit dan Farhan menjalankan demo flow dan QA manual.
+1. Mikail membuat `/stock-outs/new`.
+2. Farhan membuat `/dashboard`.
+3. Adit membuat `/stock-outs`.
+4. Adit dan Farhan menjalankan demo flow dan QA manual.
 
 ## Demo Flow Target
 
@@ -223,7 +222,7 @@ Urutan kerja yang paling aman:
 [ ] /dashboard bisa menampilkan summary dan recent movement.
 [x] /fish-types bisa menambah jenis ikan.
 [x] /cold-storages bisa menambah cold storage.
-[ ] /stocks/new bisa mencatat stok masuk.
+[x] /stocks/new bisa mencatat stok masuk.
 [ ] /stocks bisa menampilkan stok FIFO dari backend tanpa mock.
 [ ] /stock-outs/new bisa mencatat ikan keluar.
 [ ] /stock-outs bisa menampilkan riwayat pengeluaran.

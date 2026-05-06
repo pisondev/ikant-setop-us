@@ -12,8 +12,8 @@ Update terakhir: 2026-05-06.
 [x] FIFO stock list /stocks
 [x] Master fish types /fish-types
 [x] Master cold storages /cold-storages
+[x] Stock-in form /stocks/new
 [ ] Dashboard
-[ ] Stock-in form
 [ ] Stock-out form
 [ ] Stock-out history
 ```
