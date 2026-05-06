@@ -13,7 +13,7 @@ Update terakhir: 2026-05-06.
 | Frontend foundation | Mikail | Selesai tahap 1 | API helper, types, app shell, bottom nav, dan page header tersedia. |
 | `/` entry page | Mikail | Selesai sementara | Template Next.js sudah diganti menjadi entry point aplikasi. |
 | `/stocks` FIFO list | Farhan | Sebagian lanjut | Sudah memakai API helper/type bersama, error state eksplisit, dan tanpa mock fallback. |
-| Dashboard frontend | Farhan | Belum | Route `/dashboard` belum ada. |
+| Dashboard frontend | Farhan | Selesai | Route `/dashboard` sudah summary dan recent movements. |
 | Master data frontend | Pannayaka | Selesai | Route `/fish-types` dan `/cold-storages` sudah GET/POST API. |
 | Stock-in page | Mikail | Selesai | Route `/stocks/new` sudah GET master data dan POST `/stocks`. |
 | Stock-out page | Mikail | Selesai | Route `/stock-outs/new` sudah preview FIFO dan POST `/stock-outs`. |
@@ -51,7 +51,7 @@ Update terakhir: 2026-05-06.
 [x] Mobile app shell tersedia.
 [x] Bottom navigation tersedia.
 [x] / tidak lagi memakai template Next.js.
-[ ] /dashboard tersedia.
+[x] /dashboard tersedia.
 [x] /fish-types tersedia.
 [x] /cold-storages tersedia.
 [x] /stocks/new tersedia.
@@ -113,8 +113,8 @@ Checklist:
 [x] Rapikan /stocks memakai API helper dan shared types.
 [x] Tambahkan error state eksplisit di /stocks.
 [x] Tambahkan tombol navigasi ke input stok dan input keluar.
-[ ] Buat /dashboard.
-[ ] Validasi angka dashboard setelah stock in/out.
+[x] Buat /dashboard.
+[~] Validasi angka dashboard setelah stock in/out menunggu QA manual end-to-end.
 [ ] Jalankan skenario FIFO manual dari docs/fifo-test-scenarios.md.
 ```
 
@@ -189,9 +189,8 @@ Checklist:
 
 Urutan kerja yang paling aman:
 
-1. Farhan membuat `/dashboard`.
-2. Adit membuat `/stock-outs`.
-3. Adit dan Farhan menjalankan demo flow dan QA manual.
+1. Adit membuat `/stock-outs`.
+2. Adit dan Farhan menjalankan demo flow dan QA manual.
 
 ## Demo Flow Target
 
@@ -218,7 +217,7 @@ Urutan kerja yang paling aman:
 [x] API contract tersedia.
 [x] Postman collection dan environment tersedia.
 [ ] Frontend Next.js menyala dengan halaman MVP lengkap.
-[ ] /dashboard bisa menampilkan summary dan recent movement.
+[x] /dashboard bisa menampilkan summary dan recent movement.
 [x] /fish-types bisa menambah jenis ikan.
 [x] /cold-storages bisa menambah cold storage.
 [x] /stocks/new bisa mencatat stok masuk.

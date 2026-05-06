@@ -14,7 +14,7 @@ Update terakhir: 2026-05-06.
 [x] Master cold storages /cold-storages
 [x] Stock-in form /stocks/new
 [x] Stock-out form /stock-outs/new
-[ ] Dashboard
+[x] Dashboard /dashboard
 [ ] Stock-out history
 ```
 

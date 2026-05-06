@@ -24,7 +24,8 @@ input stok masuk -> data tersimpan -> stok tampil FIFO -> stok keluar dicatat ->
 | Master data frontend | Selesai | `/fish-types` dan `/cold-storages` sudah terintegrasi GET/POST API. |
 | Stock-in frontend | Selesai | `/stocks/new` sudah terintegrasi GET master data dan POST `/stocks`. |
 | Stock-out form frontend | Selesai | `/stock-outs/new` sudah punya FIFO preview dan POST `/stock-outs`. |
-| Halaman frontend lain | Belum | Dashboard dan riwayat belum ada. |
+| Dashboard frontend | Selesai | `/dashboard` sudah terintegrasi summary dan recent movements. |
+| Halaman frontend lain | Belum | Riwayat pengeluaran belum ada. |
 
 ## API Base URL
 
@@ -45,7 +46,7 @@ docs/api/api-contract-v1.md
 | Route | Prioritas | Status | API |
 |---|---:|---|---|
 | `/` | High | Selesai sementara | Tidak ada |
-| `/dashboard` | High | Belum | `GET /dashboard/summary`, `GET /dashboard/recent-movements` |
+| `/dashboard` | High | Selesai | `GET /dashboard/summary`, `GET /dashboard/recent-movements` |
 | `/fish-types` | Medium | Selesai | `GET /fish-types`, `POST /fish-types` |
 | `/cold-storages` | Medium | Selesai | `GET /cold-storages`, `POST /cold-storages` |
 | `/stocks/new` | High | Selesai | `GET /fish-types`, `GET /cold-storages`, `POST /stocks` |
@@ -95,14 +96,14 @@ Informasi yang ditampilkan:
 Acceptance criteria:
 
 ```txt
-[ ] Halaman /dashboard tersedia.
-[ ] GET /dashboard/summary terintegrasi.
-[ ] GET /dashboard/recent-movements terintegrasi.
-[ ] Loading state tersedia.
-[ ] Error state tersedia.
-[ ] Empty recent movement tetap rapi.
-[ ] Angka berubah setelah stok masuk.
-[ ] Angka berubah setelah stok keluar.
+[x] Halaman /dashboard tersedia.
+[x] GET /dashboard/summary terintegrasi.
+[x] GET /dashboard/recent-movements terintegrasi.
+[x] Loading state tersedia.
+[x] Error state tersedia.
+[x] Empty recent movement tetap rapi.
+[~] Angka berubah setelah stok masuk: perlu validasi manual end-to-end dengan backend menyala.
+[~] Angka berubah setelah stok keluar: perlu validasi manual end-to-end dengan backend menyala.
 ```
 
 ### `/fish-types`
@@ -270,14 +271,13 @@ export type FIFOStock = {
 
 ## Urutan Kerja Berikutnya
 
-1. Buat `/dashboard`.
-2. Buat `/stock-outs`.
-3. Jalankan demo flow end-to-end.
+1. Buat `/stock-outs`.
+2. Jalankan demo flow end-to-end.
 
 ## Definition of Done Frontend MVP
 
 ```txt
-[ ] /dashboard bisa menampilkan summary dan recent movement dari backend.
+[x] /dashboard bisa menampilkan summary dan recent movement dari backend.
 [x] /fish-types bisa menambah jenis ikan.
 [x] /cold-storages bisa menambah cold storage.
 [x] /stocks/new bisa mencatat stok masuk.
